@@ -64,9 +64,10 @@ namespace OgreBulletDynamics
                             const Ogre::Real fixedTimestep = 1.0/60.0);
 
         void addRigidBody(RigidBody *rb, short collisionGroup, short collisionMask);
+        void addSoftBody(SoftBody *sb, short collisionGroup, short collisionMask);
 
-
-        inline btDynamicsWorld * getBulletDynamicsWorld() const { return static_cast<btDynamicsWorld *>(mWorld); }
+        inline btDynamicsWorld * getBulletDynamicsWorld() const { return static_cast<btSoftRigidDynamicsWorld *>(mWorld); }
+        inline btSoftBodyWorldInfo& getWorldInfo() const { return static_cast<btSoftRigidDynamicsWorld *>(mWorld)->getWorldInfo(); }
 
         void removeConstraint(TypedConstraint *constraint);
         void addConstraint(TypedConstraint *constraint);

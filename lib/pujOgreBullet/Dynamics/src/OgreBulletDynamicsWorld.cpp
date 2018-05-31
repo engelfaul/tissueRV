@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include "OgreBulletDynamicsWorld.h"
 #include "OgreBulletDynamicsObjectState.h"
 #include "OgreBulletDynamicsRigidBody.h"
+#include "OgreBulletDynamicsSoftBody.h"
 #include "OgreBulletDynamicsConstraint.h"
 
 #include "Constraints/OgreBulletDynamicsRaycastVehicle.h"
@@ -62,11 +63,8 @@ namespace OgreBulletDynamics
         //only if init is true, otherwise you have to create mWorld manually later on
         if (init)
         {
-            mWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration);
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
-
-			//btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(mWorld->getDispatcher());
-			//btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+            mWorld = new btSoftRigidDynamicsWorld(mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration);
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
 		}
 
     }
@@ -85,11 +83,26 @@ namespace OgreBulletDynamics
 		if (collisionGroup == 0 && collisionMask == 0)
 		{
 			// use default collision group/mask values (dynamic/kinematic/static)
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody());
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody());
 		}
 		else
 		{
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody(), collisionGroup, collisionMask);
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody(), collisionGroup, collisionMask);
+		}
+    }
+     // -------------------------------------------------------------------------
+    void DynamicsWorld::addSoftBody(SoftBody *sb, short collisionGroup, short collisionMask)
+    {
+        mObjects.push_back(static_cast <Object *>(sb));
+
+		if (collisionGroup == 0 && collisionMask == 0)
+		{
+			// use default collision group/mask values (dynamic/kinematic/static)
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addSoftBody(sb->getBulletSoftBody());
+		}
+		else
+		{
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addSoftBody(sb->getBulletSoftBody(), collisionGroup, collisionMask);
 		}
     }
     // -------------------------------------------------------------------------

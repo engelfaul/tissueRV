@@ -150,7 +150,7 @@ void RagDollApp::
 createCamera( )
 {
   this->Superclass::createCamera( );
-  this->m_Camera->setPosition( Ogre::Vector3( 25, 25, 25 ) );
+  this->m_Camera->setPosition( Ogre::Vector3( 300, 300, 300 ) );
   this->m_Camera->lookAt( Ogre::Vector3( 0, 10, 0 ) );
   this->m_Camera->setNearClipDistance( 5 );
 }
