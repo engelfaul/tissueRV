@@ -10,6 +10,7 @@
 #include "OgreBulletDynamicsWorld.h"
 #include "OgreBulletDynamicsSoftBody.h"
 
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
 using namespace Ogre;
 using namespace OgreBulletCollisions;
@@ -148,13 +149,28 @@ namespace OgreBulletDynamics
             }
         }
         
-        btSoftBody *body = btSoftBodyHelpers::CreateFromTriMesh( getDynamicsWorld()->getWorldInfo(),
+        btSoftRigidDynamicsWorld* myWorld =
+          dynamic_cast< btSoftRigidDynamicsWorld* >( getDynamicsWorld()->getBulletDynamicsWorld() );
+        if( myWorld == NULL )
+          throw std::runtime_error( "No sea bruto" );
+
+        btSoftBody *body = btSoftBodyHelpers::CreateFromTriMesh( myWorld->getWorldInfo(),
                                                                 &trimeshVertices[0],
                                                                 &triangles[0],
                                                                 objTriMesh->getNumTriangles()
                                                                 );
         
         mObject = body;
+	    body->getCollisionShape()->setMargin( 0.1f );
+        body->setTotalMass( bodyMass );
+	    //cloth->generateBendingConstraints(2,cloth->appendMaterial());
+	    body->m_cfg.citerations = 10;
+        body->m_cfg.diterations = 10;
+	    body->m_cfg.piterations = 5;
+        body->m_cfg.kDF = 0.75;
+	    body->m_cfg.kDP = 0.005f;
+        body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;	
+        body->randomizeConstraints();
         getDynamicsWorld()->addSoftBody(this, mCollisionGroup, mCollisionMask);
     }
 }

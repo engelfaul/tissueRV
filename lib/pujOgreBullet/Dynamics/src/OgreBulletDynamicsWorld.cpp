@@ -41,6 +41,11 @@ THE SOFTWARE.
 
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
+#include "BulletSoftBody/btDefaultSoftBodySolver.h"
+#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
 using namespace Ogre;
 using namespace OgreBulletCollisions;
@@ -63,8 +68,17 @@ namespace OgreBulletDynamics
         //only if init is true, otherwise you have to create mWorld manually later on
         if (init)
         {
-            mWorld = new btSoftRigidDynamicsWorld(mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration);
-            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
+          // mWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration);
+
+          // btSequentialImpulseConstraintSolver* solver2 = new btSequentialImpulseConstraintSolver( );
+          btSoftBodySolver* solver = new btDefaultSoftBodySolver( );
+          mWorld = new btSoftRigidDynamicsWorld( mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration, solver );
+
+
+            static_cast<btDiscreteDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
+
+			//btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(mWorld->getDispatcher());
+			//btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
 		}
 
     }
@@ -83,14 +97,15 @@ namespace OgreBulletDynamics
 		if (collisionGroup == 0 && collisionMask == 0)
 		{
 			// use default collision group/mask values (dynamic/kinematic/static)
-            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody());
+            static_cast<btDiscreteDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody());
 		}
 		else
 		{
-            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody(), collisionGroup, collisionMask);
+            static_cast<btDiscreteDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody(), collisionGroup, collisionMask);
 		}
     }
-     // -------------------------------------------------------------------------
+
+    // -------------------------------------------------------------------------
     void DynamicsWorld::addSoftBody(SoftBody *sb, short collisionGroup, short collisionMask)
     {
         mObjects.push_back(static_cast <Object *>(sb));
@@ -105,6 +120,7 @@ namespace OgreBulletDynamics
             static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addSoftBody(sb->getBulletSoftBody(), collisionGroup, collisionMask);
 		}
     }
+
     // -------------------------------------------------------------------------
     void DynamicsWorld::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep)
     {

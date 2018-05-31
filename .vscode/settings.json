@@ -3,6 +3,10 @@
         "typeinfo": "cpp",
         "slist": "cpp",
         "deque": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "*.ipp": "cpp",
+        "*.tcc": "cpp",
+        "unordered_map": "cpp",
+        "system_error": "cpp"
     }
 }

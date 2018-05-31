@@ -140,7 +140,7 @@ createScene( )
   q.normalise( );
   this->addSoftPhysicsTrimesh(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 10, 0 ),
+    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 2, 0 ),
     q
     );
 }
@@ -150,7 +150,7 @@ void RagDollApp::
 createCamera( )
 {
   this->Superclass::createCamera( );
-  this->m_Camera->setPosition( Ogre::Vector3( 300, 300, 300 ) );
+  this->m_Camera->setPosition( Ogre::Vector3( 25, 25, 25 ) );
   this->m_Camera->lookAt( Ogre::Vector3( 0, 10, 0 ) );
   this->m_Camera->setNearClipDistance( 5 );
 }

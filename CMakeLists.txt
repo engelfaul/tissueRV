@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.0)
 set(prj_NAME pujOgre)
 set(prj_MAJ 1)
 set(prj_MIN 0)
-set(prj_REL 0)  
+set(prj_REL 0)
 
 ## == Project definiton
 project(${prj_NAME} VERSION "${prj_MAJ}.${prj_MIN}.${prj_REL}")
@@ -60,7 +60,7 @@ find_library(
   OIS_LIBRARIES
   NAMES OIS
   )
-  
+
 ## == Build
 subdirs(lib src)
 

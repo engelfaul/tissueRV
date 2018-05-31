@@ -33,10 +33,7 @@ THE SOFTWARE.
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
-#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
-
 
 #include "Ogre.h"
 #include "OgreBulletCollisions.h"
@@ -46,7 +43,6 @@ namespace OgreBulletDynamics
 {
     class RigidBody;
     class SoftBody;
-
     class PhysicState;
     class DynamicsWorld;
 

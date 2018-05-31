@@ -62,7 +62,7 @@ namespace pujOgre
     virtual bool mousePressed( const OIS::MouseEvent& arg, OIS::MouseButtonID id ) override;
     virtual bool mouseReleased( const OIS::MouseEvent& arg, OIS::MouseButtonID id ) override;
 
-    // Ogre::WindowEventListener
+    // OgreBites::WindowEventListener
     virtual void windowResized( Ogre::RenderWindow* rw ) override;
     virtual void windowClosed( Ogre::RenderWindow* rw ) override;
 

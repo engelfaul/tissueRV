@@ -40,6 +40,9 @@ THE SOFTWARE.
 #include "Debug/OgreBulletCollisionsDebugShape.h"
 #include "OgreBulletCollisionsRay.h"
 
+#include "BulletSoftBody/btDefaultSoftBodySolver.h"
+#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
 
 using namespace Ogre;
@@ -81,7 +84,9 @@ namespace OgreBulletCollisions
 	// if not called by a inherited class
     if (init)
     {
-        mWorld = new btCollisionWorld(mDispatcher, mBroadphase, &mDefaultCollisionConfiguration);
+      mWorld = new btCollisionWorld(mDispatcher, mBroadphase, &mDefaultCollisionConfiguration);
+
+      // btCollisionWorld(mDispatcher, mBroadphase, &mDefaultCollisionConfiguration);
 
         btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(mWorld->getDispatcher());
         btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
