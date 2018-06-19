@@ -63,8 +63,8 @@ namespace OgreBulletDynamics
                             int maxSubSteps = 1,
                             const Ogre::Real fixedTimestep = 1.0/60.0);
 
-      void addRigidBody(RigidBody *rb, short collisionGroup, short collisionMask);
-      void addSoftBody(SoftBody *sb, short collisionGroup, short collisionMask);
+        void addRigidBody(RigidBody *rb, short collisionGroup, short collisionMask);
+        void addSoftBody(SoftBody *sb, short collisionGroup, short collisionMask);
 
         inline btDynamicsWorld * getBulletDynamicsWorld() const { return static_cast<btDynamicsWorld *>(mWorld); }
 

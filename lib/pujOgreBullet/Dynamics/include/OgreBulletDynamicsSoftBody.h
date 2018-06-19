@@ -22,6 +22,7 @@ namespace OgreBulletDynamics {
 
             void setShape(Ogre::SceneNode *node,
                       OgreBulletCollisions::CollisionShape *shape,
+                      btTriangleMesh* trimesh,
                       const float bodyRestitution,
                       const float bodyFriction,
                       const float bodyMass,
@@ -30,6 +31,7 @@ namespace OgreBulletDynamics {
 
             inline btSoftBody *getBulletSoftBody() const;
             inline DynamicsWorld *getDynamicsWorld();
+            inline btDynamicsWorld *getBulletDynamicsWorld() const;
 
         protected:
             short mCollisionGroup;
@@ -45,6 +47,12 @@ namespace OgreBulletDynamics {
     { 
         return static_cast<DynamicsWorld *>(mWorld);
     }
+    // -------------------------------------------------------------------------
+    inline btDynamicsWorld *SoftBody::getBulletDynamicsWorld() const
+    { 
+        return static_cast<btDynamicsWorld *>(mWorld->getBulletCollisionWorld());
+    }
+    
 }
 
 #endif

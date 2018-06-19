@@ -66,7 +66,9 @@ extern "C"
 }
 #endif // __cplusplus
 
-// -------------------------------------------------------------------------
+// ----------------------------------------------
+
+// ----------------------------------------------------------------------------------
 RagDollApp::
 RagDollApp( )
   : Superclass( )
@@ -120,6 +122,8 @@ createScene( )
   // Associate plane to the physical world
   this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 
+
+// -------------------------------------------------------
   // Load model entity
   Ogre::Entity* ninja =
     this->m_SceneMgr->createEntity(
@@ -135,12 +139,37 @@ createScene( )
       );
   ninja_node->attachObject( ninja );
 
+  //////////Objeto de prueba
+    // Load model entity
+  Ogre::Entity* ship =
+    this->m_SceneMgr->createEntity(
+      "ship", "Sphere.mesh"
+      );
+  ship->setCastShadows( true );
+  Ogre::AxisAlignedBox bbox2 = ship->getBoundingBox( );
+
+  // Associate it to a node
+  Ogre::SceneNode* ship_node =
+    this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
+      "ship_node"
+      );
+  ship_node->attachObject( ship );
+
+// Associate ninja to the physical world
+  Ogre::Quaternion q2( 1, 1, 2, 3 );
+  q2.normalise( );
+  this->addSoftPhysicsTrimesh(
+    ship, ship_node, "ship_physics", 0.0009, 0.0009, 75,
+    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 2, 0 ),
+    q2
+    );
+
   // Associate ninja to the physical world
   Ogre::Quaternion q( 1, 1, 2, 3 );
   q.normalise( );
-  this->addSoftPhysicsTrimesh(
+  this->addPhysicsConvex(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 2, 0 ),
+    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 1, 0 ),
     q
     );
 }
@@ -153,6 +182,43 @@ createCamera( )
   this->m_Camera->setPosition( Ogre::Vector3( 25, 25, 25 ) );
   this->m_Camera->lookAt( Ogre::Vector3( 0, 10, 0 ) );
   this->m_Camera->setNearClipDistance( 5 );
+}
+
+
+bool pujOgre::Application::
+keyPressed( const OIS::KeyEvent& arg )
+{
+  OIS::KeyCode a = arg.key;
+  if(OIS::KC_W==a){
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    ballBlender_node->translate(0.1,0,0);
+  }
+  
+  if(OIS::KC_S==a){
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    ballBlender_node->translate(-0.1,0,0);
+  }
+
+  if(OIS::KC_A==a){
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    ballBlender_node->translate(0,0,-0.1);
+  }
+
+  if(OIS::KC_D==a){
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    ballBlender_node->translate(0,0,0.1);
+  }
+
+  if(OIS::KC_UP==a){
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    ballBlender_node->translate(0,0.1,0);
+  }
+
+  if(OIS::KC_DOWN==a){
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    ballBlender_node->translate(0,-0.1,0);
+  }  
+  return( true );
 }
 
 // eof - $RCSfile$

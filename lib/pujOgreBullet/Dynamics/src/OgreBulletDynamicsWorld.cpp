@@ -27,6 +27,8 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
+#include <iostream>
+
 #include "OgreBulletDynamics.h"
 
 #include "OgreBulletCollisionsShape.h"
@@ -47,6 +49,8 @@ THE SOFTWARE.
 #include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
 #include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
+#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+
 using namespace Ogre;
 using namespace OgreBulletCollisions;
 
@@ -61,24 +65,21 @@ namespace OgreBulletDynamics
                                  unsigned int maxHandles)
         : CollisionsWorld(mgr, bounds, false, set32BitAxisSweep, maxHandles)
     {
-        //btSequentialImpulseConstraintSolver
-        //btSequentialImpulseConstraintSolver3
         mConstraintsolver = new btSequentialImpulseConstraintSolver();
-
-        //only if init is true, otherwise you have to create mWorld manually later on
+        
         if (init)
         {
-          // mWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration);
-
-          // btSequentialImpulseConstraintSolver* solver2 = new btSequentialImpulseConstraintSolver( );
-          btSoftBodySolver* solver = new btDefaultSoftBodySolver( );
-          mWorld = new btSoftRigidDynamicsWorld( mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration, solver );
-
-
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
-
-			//btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(mWorld->getDispatcher());
-			//btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+            std::cout << "\n----- ANTES DEl GENESIS ------" << std::endl;
+            std::cout << "- Tipo Dispatcher: " << typeid(*mDispatcher).name() << std::endl;
+            std::cout << "- Tipo Collision Config: " << typeid(mDefaultCollisionConfiguration).name() << std::endl;
+            std::cout << "- Tipo Broadphase: " << typeid(mBroadphase).name() << std::endl;
+            
+            btSoftBodySolver* solver = new btDefaultSoftBodySolver( );
+            mWorld = new btSoftRigidDynamicsWorld( mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration, solver );
+            //(DynamicsWorld*)mWorld->getDynamicsWorld()->getBulletDynamicsWorld()->setGravity(btVector3(0, -10, 0));
+            
+            std::cout << "- Tipo Mundo: " << typeid(mWorld).name() << std::endl << std::endl;
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
 		}
 
     }
@@ -97,11 +98,11 @@ namespace OgreBulletDynamics
 		if (collisionGroup == 0 && collisionMask == 0)
 		{
 			// use default collision group/mask values (dynamic/kinematic/static)
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody());
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody());
 		}
 		else
 		{
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody(), collisionGroup, collisionMask);
+            static_cast<btSoftRigidDynamicsWorld *>(mWorld)->addRigidBody(rb->getBulletRigidBody(), collisionGroup, collisionMask);
 		}
     }
 
@@ -135,7 +136,7 @@ namespace OgreBulletDynamics
             mDebugContactPoints->clear();
         }
 
-        static_cast<btDiscreteDynamicsWorld *> (mWorld)->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
+        static_cast<btSoftRigidDynamicsWorld *> (mWorld)->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
 
 		if (mDebugContactPoints) 
 		{

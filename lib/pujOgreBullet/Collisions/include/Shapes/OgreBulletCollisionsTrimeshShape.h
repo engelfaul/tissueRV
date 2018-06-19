@@ -53,6 +53,8 @@ namespace OgreBulletCollisions
         bool drawWireFrame(DebugLines *wire,
                            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
                            const Ogre::Quaternion &quat= Ogre::Quaternion::IDENTITY) const;
+        
+        btTriangleMesh* getTrimesh();
 
     private:
         btTriangleMesh *mTriMesh;

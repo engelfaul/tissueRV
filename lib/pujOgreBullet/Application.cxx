@@ -174,7 +174,7 @@ addPhysicsConvex(
 
 // -------------------------------------------------------------------------
 void pujOgreBullet::Application::
-addPhysicsTrimesh(
+addRigidPhysicsTrimesh(
   Ogre::Entity* entity,
   Ogre::SceneNode* node,
   const std::string& name,
@@ -194,6 +194,7 @@ addPhysicsTrimesh(
     bodyRestitution, bodyFriction, bodyMass,
     position, orientation
     );
+    body->setDebugDisplayEnabled(true);    
 }
 // -------------------------------------------------------------------------
 void pujOgreBullet::Application::
@@ -212,11 +213,16 @@ addSoftPhysicsTrimesh(
     new OgreBulletCollisions::StaticMeshToShapeConverter( entity );
   OgreBulletDynamics::SoftBody* body =
     new OgreBulletDynamics::SoftBody( name, this->m_BulletWorld );
+  OgreBulletCollisions::TriangleMeshCollisionShape* collisionShape =
+    conv->createTrimesh( );
+  btTriangleMesh* trimesh = collisionShape->getTrimesh();
+
     body->setShape(
-      node, conv->createTrimesh( ),
+      node, collisionShape, trimesh,
       bodyRestitution, bodyFriction, bodyMass,
       position, orientation
     );
+    body->setDebugDisplayEnabled(true);
 }
 
 

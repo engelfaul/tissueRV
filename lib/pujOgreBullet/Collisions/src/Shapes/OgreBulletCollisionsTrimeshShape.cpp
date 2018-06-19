@@ -86,6 +86,11 @@ namespace OgreBulletCollisions
         mShape = new btBvhTriangleMeshShape(mTriMesh, useQuantizedAABB);
     }
     // -------------------------------------------------------------------------
+    btTriangleMesh* TriangleMeshCollisionShape::getTrimesh()
+    {
+        return mTriMesh;
+    }
+    // -------------------------------------------------------------------------
     TriangleMeshCollisionShape::~TriangleMeshCollisionShape()
     {
         if (mTriMesh)

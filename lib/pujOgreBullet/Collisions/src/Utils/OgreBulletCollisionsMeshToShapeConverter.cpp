@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
-
+#include <iostream>
 #include "OgreBulletCollisions.h"
 
 #include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
@@ -580,10 +580,13 @@ CompoundCollisionShape *VertexIndexToShape::createConvexDecomposition(unsigned i
 //------------------------------------------------------------------------------------------------
 TriangleMeshCollisionShape *VertexIndexToShape::createTrimesh()
 {
+    std::cout << "* Trimesh Vertex count: " << mVertexCount << std::endl;
+    std::cout << "* Trimesh Triangles count: " << mIndexCount / 3 << std::endl;
+
     assert(mVertexCount && (mIndexCount >= 6) &&
            "Mesh must have some vertices and at least 6 indices (2 triangles)");
 
-    return new TriangleMeshCollisionShape(mVertexBuffer, mVertexCount,mIndexBuffer, mIndexCount);
+    return new TriangleMeshCollisionShape(mVertexBuffer, mVertexCount, mIndexBuffer, mIndexCount);
 }
 //------------------------------------------------------------------------------------------------
 GImpactConcaveShape *VertexIndexToShape::createConcave()

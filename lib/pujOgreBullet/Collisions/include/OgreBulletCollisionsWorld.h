@@ -32,6 +32,7 @@ THE SOFTWARE.
 #define _OGREBULLETCOLLISIONS_CollisionWorld_H
 
 #include "OgreBulletCollisionsPreRequisites.h"
+#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
 
 namespace OgreBulletCollisions
@@ -96,7 +97,7 @@ namespace OgreBulletCollisions
 
         Ogre::AxisAlignedBox mBounds;
 
-		btDefaultCollisionConfiguration	mDefaultCollisionConfiguration;
+		btSoftBodyRigidBodyCollisionConfiguration	mDefaultCollisionConfiguration;
 
         std::deque<Object *> mObjects;
 

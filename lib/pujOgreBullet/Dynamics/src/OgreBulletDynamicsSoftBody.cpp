@@ -31,6 +31,7 @@ namespace OgreBulletDynamics
     // -------------------------------------------------------------------------
     void SoftBody::setShape(Ogre::SceneNode *node,
                       OgreBulletCollisions::CollisionShape *shape,
+                      btTriangleMesh* trimesh,
                       const float bodyRestitution,
                       const float bodyFriction,
                       const float bodyMass,
@@ -47,75 +48,28 @@ namespace OgreBulletDynamics
         node->setOrientation(quat);
 
         mShape = shape;
+        std::cout << "\n\nTipo de *shape: " << typeid( *(shape->getBulletShape()) ).name() << std::endl;
+        std::cout << "Tipo de shape: " << typeid( shape->getBulletShape() ).name() << std::endl;
+        std::cout << "Tipo de shape (planito): " << typeid( shape ).name() << std::endl;
+        std::cout << "Tipo de *mShape: " << typeid( *(mShape->getBulletShape()) ).name() << std::endl;
+        std::cout << "Tipo de mShape: " << typeid( mShape   ->getBulletShape() ).name() << std::endl;
+        std::cout << "Tipo de mShape (planito): " << typeid( mShape ).name() << std::endl;
+        std::cout << "Tipo de trimesh: " << typeid( trimesh ).name() << std::endl;
 
-        Ogre::Entity* objEntity = static_cast<Entity*> ( node->getAttachedObject(0) );
-        Ogre::MeshPtr objMesh = objEntity->getMesh( );
-        Ogre::Mesh::SubMeshList subMeshesList = objMesh->getSubMeshes( );
-        Ogre::Mesh::SubMeshIterator::iterator subMeshesIterator = subMeshesList.begin();
-
-        btVector3 vert0, vert1, vert2;
-	    std::vector<Ogre::Vector3> vertices;
-	    std::vector<unsigned long> indices;
-
-        btTriangleMesh *objTriMesh = new btTriangleMesh( );
+        showDebugShape(mWorld->getShowDebugShapes());
         
-        for ( ; subMeshesIterator !=  subMeshesList.end() ; subMeshesIterator++) {
-            Ogre::SubMesh* tempSubMesh = *subMeshesIterator;
-            Ogre::IndexData*  indexData = tempSubMesh->indexData;
-            Ogre::VertexData* vertexData = tempSubMesh->vertexData;
-
-            const Ogre::VertexElement* elementPosition = 
-                vertexData->vertexDeclaration->findElementBySemantic ( Ogre::VES_POSITION );
-            Ogre::HardwareVertexBufferSharedPtr vertexBuffer = 
-                vertexData->vertexBufferBinding->getBuffer ( elementPosition->getSource() );
-            Ogre::HardwareIndexBufferSharedPtr indexBuffer = indexData->indexBuffer;
-
-            vertices.reserve ( vertexData->vertexCount );
-    	    indices.reserve ( indexData->indexCount );
-
-            // -------- Read from Vertex Buffer --------------
-		    unsigned char* vertex = 
-			static_cast<unsigned char*> ( vertexBuffer->lock ( Ogre::HardwareBuffer::HBL_READ_ONLY ) );
-		    float* pReal = NULL;
-		    for ( size_t j = 0; j < vertexData->vertexCount; ++j, vertex += vertexBuffer->getVertexSize( ) ) {
-			    elementPosition->baseVertexPointerToElement( vertex, &pReal );
-			    Ogre::Vector3 p ( pReal[0], pReal[1], pReal[2] );
-			    vertices.push_back( p );
-		    }
-		    vertexBuffer->unlock( );
-
-            // -------- Read from Index Buffer --------------
-            unsigned long* pLong =
-			static_cast<unsigned long*> ( indexBuffer->lock ( Ogre::HardwareBuffer::HBL_READ_ONLY ) );
-		    unsigned short* pShort = reinterpret_cast<unsigned short*> ( pLong );
-		    for ( size_t k = 0; k < indexData->indexCount; ++k )
-        		indices.push_back ( static_cast<unsigned long> ( pShort[k] ) );
-		    
-            indexBuffer->unlock( );
-
-            // -------------- Create TriMesh ---------------
-            unsigned int i = 0;
-            for ( size_t j = 0; j < indexData->indexCount / 3; j++ ) {
-			    vert0.setValue ( vertices[indices[i]].x, vertices[indices[i]].y, vertices[indices[i]].z );
-      		    vert1.setValue ( vertices[indices[i+1]].x, vertices[indices[i+1]].y, vertices[indices[i+1]].z );
-      		    vert2.setValue ( vertices[indices[i+2]].x, vertices[indices[i+2]].y, vertices[indices[i+2]].z );
-
-      		    objTriMesh->addTriangle ( vert0, vert1, vert2 );
-      		    i += 3;
-    	    }
+        btVector3 localInertiaTensor = btVector3(0.f, 0.f, 0.f);
+        if (bodyMass > 0.f)
+        {
+            mShape->getBulletShape()->calculateLocalInertia( bodyMass, localInertiaTensor );
         }
 
-        std::cout << "\n # Vertices: " << vertices.size();
-        std::cout << "\n # Triangles: " << objTriMesh->getNumTriangles() << std::endl;
-
-
         // -------------- Create Soft Body from TriMesh ---------------
-        
-        const btVector3 meshScaling = objTriMesh->getScaling();
+        const btVector3 meshScaling = trimesh->getScaling();
         btAlignedObjectArray<btScalar> trimeshVertices;
         btAlignedObjectArray<int> triangles;
 
-        for ( int part=0;part< objTriMesh->getNumSubParts(); part++ ) {
+        for ( int part=0;part< trimesh->getNumSubParts(); part++ ) {
             const unsigned char * vertexbase;
             const unsigned char * indexbase;
 
@@ -123,7 +77,7 @@ namespace OgreBulletDynamics
             int stride, numverts, numtriangles;
             PHY_ScalarType type, gfxindextype;
 
-            objTriMesh->getLockedReadOnlyVertexIndexBase(   &vertexbase,
+            trimesh->getLockedReadOnlyVertexIndexBase(   &vertexbase,
                                                             numverts,
                                                             type,
                                                             stride,
@@ -148,18 +102,28 @@ namespace OgreBulletDynamics
                 triangles.push_back(tri_indices[2]);
             }
         }
+
         
         btSoftRigidDynamicsWorld* myWorld =
           dynamic_cast< btSoftRigidDynamicsWorld* >( getDynamicsWorld()->getBulletDynamicsWorld() );
         if( myWorld == NULL )
           throw std::runtime_error( "No sea bruto" );
 
+        std::cout << "\n----- MUNDO EXISTENTE ------" << std::endl;
+        std::cout << "- Tipo Dispatcher: " << typeid(*(myWorld->getWorldInfo().m_dispatcher)).name() << std::endl;
+        std::cout << "- Tipo Broadphase: " << typeid(*(myWorld->getWorldInfo().m_broadphase)).name() << std::endl;
+        std::cout << "- Tipo Mundo: " << typeid(*myWorld).name() << std::endl << std::endl;
+        std::cout << "- Gravedad: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;
+        
         btSoftBody *body = btSoftBodyHelpers::CreateFromTriMesh( myWorld->getWorldInfo(),
                                                                 &trimeshVertices[0],
                                                                 &triangles[0],
-                                                                objTriMesh->getNumTriangles()
+                                                                trimesh->getNumTriangles()
                                                                 );
-        
+
+       // myWorld->getWorldInfo().m_gravity =  btVector3(0,10,0);
+        std::cout << "- Gravedad2: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;                                                        
+        body->generateBendingConstraints(2);
         mObject = body;
 	    body->getCollisionShape()->setMargin( 0.1f );
         body->setTotalMass( bodyMass );
@@ -172,5 +136,8 @@ namespace OgreBulletDynamics
         body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;	
         body->randomizeConstraints();
         getDynamicsWorld()->addSoftBody(this, mCollisionGroup, mCollisionMask);
-    }
+
+        std::cout << "\n----- CONTEO ------" << std::endl;
+        std::cout << "Cantidad de Soft bodies: " << myWorld->getSoftBodyArray().size() << std::endl;
+    }    
 }

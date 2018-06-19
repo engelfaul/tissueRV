@@ -88,7 +88,7 @@ namespace pujOgreBullet
       const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY
       );
 
-    void addPhysicsTrimesh(
+    void addRigidPhysicsTrimesh(
       Ogre::Entity* entity,
       Ogre::SceneNode* node,
       const std::string& name,
@@ -99,14 +99,6 @@ namespace pujOgreBullet
       const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY
       );
 
-    /* TODO
-       GImpactConcaveShape *createConcave();
-       CompoundCollisionShape *createConvexDecomposition(unsigned int depth = 5,
-       float cpercent = 5.0f,
-       float ppercent = 15.0f,
-       unsigned int maxv = 32,
-       float skinWidth = 0.0f);
-    */
    void addSoftPhysicsTrimesh(
       Ogre::Entity* entity,
       Ogre::SceneNode* node,
