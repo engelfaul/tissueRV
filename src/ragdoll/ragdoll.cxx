@@ -155,7 +155,25 @@ createScene( )
       );
   ship_node->attachObject( ship );
 
-// Associate ninja to the physical world
+  //////////Objeto piel
+    // Load model entity
+  Ogre::Entity* tissue =
+    this->m_SceneMgr->createEntity(
+      "tissue", "Tissue.mesh"
+      );
+  ship->setCastShadows( true );
+  Ogre::AxisAlignedBox bbox3 = tissue->getBoundingBox( );
+
+  // Associate it to a node
+  Ogre::SceneNode* tissue_node =
+    this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
+      "tissue_node"
+      );
+  tissue_node->attachObject( tissue );
+//Se puede transformar el objeto piel en ogre o en blender (para blender recordar aplicar con ctrl + A)
+
+
+// Associate ship to the physical world
   Ogre::Quaternion q2( 1, 1, 2, 3 );
   q2.normalise( );
   this->addSoftPhysicsTrimesh(
