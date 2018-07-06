@@ -19,7 +19,8 @@ public:
 public:
   RagDollApp( );
   virtual ~RagDollApp( );
-
+  Ogre::Vector3 direccion;
+  Ogre::Vector3 posTool;
 protected:
   virtual void createScene( ) override;
   virtual void createCamera( ) override;
@@ -116,7 +117,7 @@ createScene( )
 
   // Associate a floor entity with the created plane
   Ogre::Entity* floor = this->m_SceneMgr->createEntity( "floor", "plane" );
-  floor->setMaterialName( "Mat" );
+  floor->setMaterialName( "Mat2" );
   this->m_SceneMgr->getRootSceneNode( )->attachObject( floor );
 
   // Associate plane to the physical world
@@ -161,18 +162,39 @@ createScene( )
     this->m_SceneMgr->createEntity(
       "tissue", "Tissue.mesh"
       );
-  ship->setCastShadows( true );
+  tissue->setCastShadows( true );
   Ogre::AxisAlignedBox bbox3 = tissue->getBoundingBox( );
-
+  tissue->setMaterialName( "Mat" );
   // Associate it to a node
   Ogre::SceneNode* tissue_node =
     this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
       "tissue_node"
       );
   tissue_node->attachObject( tissue );
+  tissue_node->translate(0,5,0);
 //Se puede transformar el objeto piel en ogre o en blender (para blender recordar aplicar con ctrl + A)
 
+  ////////////////////////////Objeto herramienta/////////////////////////////////////
+    // Load model entity
+  Ogre::Entity* tool =
+    this->m_SceneMgr->createEntity(
+      "tool", "tool.mesh"
+      );
+  tool->setCastShadows( true );
+  Ogre::AxisAlignedBox bbox4 = tool->getBoundingBox( );
+  
+  // Associate it to a node
+  Ogre::SceneNode* tool_node =
+    this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
+      "tool_node"
+      );
+  tool_node->attachObject( tool );
+  tool_node->translate(0,8,0);
 
+  posTool   = Ogre::Vector3(0,8,0); 
+  direccion = Ogre::Vector3(0,7,0);
+
+/////////////////////////////////////////////////////////////////////////////////////
 // Associate ship to the physical world
   Ogre::Quaternion q2( 1, 1, 2, 3 );
   q2.normalise( );
@@ -208,32 +230,32 @@ keyPressed( const OIS::KeyEvent& arg )
 {
   OIS::KeyCode a = arg.key;
   if(OIS::KC_W==a){
-    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
     ballBlender_node->translate(0.1,0,0);
   }
   
   if(OIS::KC_S==a){
-    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
     ballBlender_node->translate(-0.1,0,0);
   }
 
   if(OIS::KC_A==a){
-    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
     ballBlender_node->translate(0,0,-0.1);
   }
 
   if(OIS::KC_D==a){
-    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
     ballBlender_node->translate(0,0,0.1);
   }
 
   if(OIS::KC_UP==a){
-    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
     ballBlender_node->translate(0,0.1,0);
   }
 
   if(OIS::KC_DOWN==a){
-    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("ship_node");
+    Ogre::SceneNode* ballBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
     ballBlender_node->translate(0,-0.1,0);
   }  
   return( true );

@@ -1,19 +1,22 @@
-<scene export_time="1530837266.380184" exported_by="carlos" formatVersion="1.0.1" previous_export_time="1530748856.703771" >
+<scene export_time="1530840490.2558706" exported_by="carlos" formatVersion="1.0.1" previous_export_time="0" >
   <nodes >
-    <node name="Tissue" >
-      <position z="0.333491" y="-0.000004" x="0.022711" />
+    <node name="tool" >
+      <position z="-0.000000" y="5.188190" x="0.000000" />
       <rotation qw="1.000000" qz="-0.000000" qx="0.000000" qy="0.000000" />
       <scale z="1.000000" y="1.000000" x="1.000000" />
+      <user_data name="cycles" value='&lt;bpy id prop: owner="OBtool", name="cycles", address=0x7f45bb37ea68&gt;' type="IDPropertyGroup" />
+      <user_data name="cycles_visibility" value='&lt;bpy id prop: owner="OBtool", name="cycles_visibility", address=0x7f45bb37e928&gt;' type="IDPropertyGroup" />
       <game >
         <sensors />
         <actuators />
       </game>
-      <entity name="Tissue" lock_rot_z="False" inertia_tensor="0.4000000059604645" mass_radius="1.0" friction_x="1.0" damping_trans="0.03999999910593033" damping_rot="0.10000000149011612" lock_trans_z="False" velocity_min="0.0" friction_z="1.0" lock_trans_y="False" actor="False" lock_rot_x="False" friction_y="1.0" ghost="False" physics_type="STATIC" mass="1.0" lock_trans_x="False" anisotropic_friction="False" meshFile="Tissue.mesh" velocity_max="0.0" lock_rot_y="False" />
+      <entity name="tool" lock_rot_z="False" inertia_tensor="0.4000000059604645" mass_radius="1.0" friction_x="1.0" damping_trans="0.02539999969303608" damping_rot="0.1589999943971634" lock_trans_z="False" velocity_min="0.0" friction_z="1.0" lock_trans_y="False" actor="False" lock_rot_x="False" friction_y="1.0" ghost="False" physics_type="STATIC" mass="1.0" lock_trans_x="False" anisotropic_friction="False" meshFile="tool.mesh" velocity_max="0.0" lock_rot_y="False" />
     </node>
     <node name="Lamp" >
       <position z="-1.005454" y="5.903862" x="4.076245" />
       <rotation qw="0.570947" qz="-0.272171" qx="0.169076" qy="0.755880" />
       <scale z="1.000000" y="1.000000" x="1.000000" />
+      <user_data name="cycles_visibility" value='&lt;bpy id prop: owner="OBLamp", name="cycles_visibility", address=0x7f45bb59e268&gt;' type="IDPropertyGroup" />
       <game >
         <sensors />
         <actuators />
@@ -39,7 +42,11 @@
       </camera>
     </node>
   </nodes>
-  <externals />
+  <externals >
+    <item type="material" >
+      <file name="/home/carlos/exports/meshes/MaterialTool.material" />
+    </item>
+  </externals>
   <environment >
     <colourDiffuse r="0.05087608844041824" g="0.05087608844041824" b="0.05087608844041824" />
     <colourBackground r="0.05087608844041824" g="0.05087608844041824" b="0.05087608844041824" />
