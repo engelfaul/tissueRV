@@ -35,6 +35,10 @@ namespace pujOgre
     virtual ~Application( );
 
     virtual void go( );
+    size_t vertex_count;
+    size_t index_count;
+    Ogre::Vector3 *vertices;
+    Ogre::uint32 *indices;
 
   protected:
     virtual void createScene( ) = 0;

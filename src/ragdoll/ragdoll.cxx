@@ -23,8 +23,10 @@ public:
   virtual ~RagDollApp( );
   Ogre::Vector3 direccion;
   Ogre::Vector3 posTool;
-  Ogre::Vector3 *vertices;
-  Ogre::uint32 *indices;
+//  Ogre::Vector3 *vertices;
+//  Ogre::uint32 *indices;
+//  size_t vertex_count;
+//  size_t index_count;
   void setMesh();
 protected:
   virtual void createScene( ) override;
@@ -196,10 +198,10 @@ createScene( )
       "tool_node"
       );
   tool_node->attachObject( tool );
-  tool_node->translate(0,8,0);
+  tool_node->translate(0,10,0);
 
-  posTool   = Ogre::Vector3(0,8,0); 
-  direccion = Ogre::Vector3(0,7,0);
+  posTool   = Ogre::Vector3(0,10,0); 
+  direccion = Ogre::Vector3(0,9,0);
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Associate ship to the physical world
@@ -246,9 +248,6 @@ void RagDollApp::setMesh(){
       size_t shared_offset = 0;
       size_t next_offset = 0;
       size_t index_offset = 0;
-
-      size_t vertex_count;
-      size_t index_count;
 
       vertex_count = index_count = 0;
 
@@ -369,35 +368,52 @@ bool pujOgre::Application::
 keyPressed( const OIS::KeyEvent& arg )
 {
   OIS::KeyCode a = arg.key;
+  Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
+  float dx  = 0;
+  float dy  = 0;
+  float dz  = 0;
   if(OIS::KC_W==a){
-    Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-    planeBlender_node->translate(0.1,0,0);
+    dx = 0.1;
   }
   
   if(OIS::KC_S==a){
-    Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-    planeBlender_node->translate(-0.1,0,0);
+    dx = -0.1;
   }
 
   if(OIS::KC_A==a){
-    Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-    planeBlender_node->translate(0,0,-0.1);
+    dz = -0.1;
   }
 
   if(OIS::KC_D==a){
-    Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-    planeBlender_node->translate(0,0,0.1);
+    dz = 0.1;
   }
 
   if(OIS::KC_UP==a){
-    Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-    planeBlender_node->translate(0,0.1,0);
+    dy = 0.1;
   }
 
   if(OIS::KC_DOWN==a){
-    Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-    planeBlender_node->translate(0,-0.1,0);
-  }  
+    dy = -0.1;
+  } 
+    planeBlender_node->translate(dx,dy,dz);
+    
+/////////////////////////////////////Buscando si hay colision/////////////////////////////////////////////////////////////////
+  //Ogre::Vector3 posBallV = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);
+  Ogre::Plane plano;
+  Ogre::Vector3 posBallV = planeBlender_node->getPosition();
+  std::cout <<"posx "<< posBallV.x << " posy " << posBallV.y << " posz " << posBallV.z <<"\n";
+  Ogre::Vector3 vel=Ogre::Vector3(0,posBallV.y-1,0);
+  Ogre::Ray golfRay = Ogre::Ray(posBallV, vel);
+  
+  for (size_t i = 0; i < index_count; i += 3){
+    plano = Ogre::Plane(vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]);
+    std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(golfRay,vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]],true , true);
+    if(inter.first && inter.second < 1){
+      std::cout <<"colision " <<"\n"; 
+    }
+  }
+////////////////////////////////////Fin Buscando colision/////////////////////////////////////////////////////////////////////
+
   return( true );
 }
 
