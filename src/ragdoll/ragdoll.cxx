@@ -8,6 +8,8 @@
 #include <OgreSceneNode.h>
 #include <OgreMesh.h>
 #include <OgreSubMesh.h>
+#include <OgreRay.h>  
+#include <OgrePlane.h>
 
 /**
  */
@@ -397,19 +399,23 @@ keyPressed( const OIS::KeyEvent& arg )
   } 
     planeBlender_node->translate(dx,dy,dz);
     
+
 /////////////////////////////////////Buscando si hay colision/////////////////////////////////////////////////////////////////
-  //Ogre::Vector3 posBallV = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);
+  //Ogre::Vector3 posTool = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);
   Ogre::Plane plano;
-  Ogre::Vector3 posBallV = planeBlender_node->getPosition();
-  std::cout <<"posx "<< posBallV.x << " posy " << posBallV.y << " posz " << posBallV.z <<"\n";
-  Ogre::Vector3 vel=Ogre::Vector3(0,posBallV.y-1,0);
-  Ogre::Ray golfRay = Ogre::Ray(posBallV, vel);
-  
+  Ogre::Vector3 posTool = planeBlender_node->getPosition();
+  posTool.y=posTool.y-6.5; //la punta de instrumento esta siete unidades abajo del centro
+  std::cout <<"posx "<< posTool.x << " posy " << posTool.y << " posz " << posTool.z <<"\n";
+  Ogre::Vector3 normal=Ogre::Vector3(posTool.x,-1,posTool.z);
+  std::cout <<"dirx "<< normal.x << " diry " << normal.y << " dirz " << normal.z <<"\n";
+  Ogre::Ray golfRay = Ogre::Ray(posTool, normal);
+  std::cout<< "origen rayo " << golfRay.getOrigin() << " direccion " << golfRay.getDirection() << "\n";
   for (size_t i = 0; i < index_count; i += 3){
     plano = Ogre::Plane(vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]);
-    std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(golfRay,vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]],true , true);
+    std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(golfRay,plano);
+    
     if(inter.first && inter.second < 1){
-      std::cout <<"colision " <<"\n"; 
+      std::cout <<"colision triangulo objetivo: "<< i <<"\n"; 
     }
   }
 ////////////////////////////////////Fin Buscando colision/////////////////////////////////////////////////////////////////////
