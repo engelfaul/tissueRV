@@ -406,13 +406,13 @@ keyPressed( const OIS::KeyEvent& arg )
   Ogre::Vector3 posTool = planeBlender_node->getPosition();
   posTool.y=posTool.y-6.5; //la punta de instrumento esta siete unidades abajo del centro
   std::cout <<"posx "<< posTool.x << " posy " << posTool.y << " posz " << posTool.z <<"\n";
-  Ogre::Vector3 normal=Ogre::Vector3(posTool.x,-1,posTool.z);
+  Ogre::Vector3 normal=Ogre::Vector3(posTool.x,-0.5,posTool.z);
   std::cout <<"dirx "<< normal.x << " diry " << normal.y << " dirz " << normal.z <<"\n";
   Ogre::Ray toolRay = Ogre::Ray(posTool, normal);
   std::cout<< "origen rayo " << toolRay.getOrigin() << " direccion " << toolRay.getDirection() << "\n";
   for (size_t i = 0; i < index_count; i += 3){
     plano = Ogre::Plane(vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]);
-    std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay,plano);
+    std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay,vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]],true , true);
     
     if(inter.first && inter.second < 1){
       std::cout <<"colision triangulo objetivo: "<< i <<"\n"; 
