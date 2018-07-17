@@ -233,7 +233,7 @@ createScene( )
   Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("cc", "ColourCube");
   thisEntity->setMaterialName("Mat");
   Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-  thisSceneNode->setPosition(-35, 5, 5);
+  thisSceneNode->setPosition(0, 5, 0);
   thisSceneNode->attachObject(thisEntity);
 }
 
@@ -448,26 +448,61 @@ void RagDollApp::createColourCube()
     const float sqrt13 = 0.577350269f; /* sqrt(1/3) */
 
     /// Define the vertices (8 vertices, each have 3 floats for position and 3 for normal)
-    const size_t nVertices = 8;
+    const size_t nVertices = 16;
     const size_t vbufCount = 3*2*nVertices;
     float vertices[vbufCount] = {
-            -10.0,10.0,-10.0,        //0 position
+            0.0,0.0,0.0,                //0 position
             -sqrt13,sqrt13,-sqrt13,     //0 normal
-            10.0,10.0,-10.0,         //1 position
+            2.0,0.0,0.0,                //1 position
             sqrt13,sqrt13,-sqrt13,      //1 normal
-            10.0,-10.0,-10.0,        //2 position
+            4.0,0.0,0.0,                //2 position
             sqrt13,-sqrt13,-sqrt13,     //2 normal
-            -10.0,-10.0,-10.0,       //3 position
+            6.0,0.0,0.0,                //3 position
             -sqrt13,-sqrt13,-sqrt13,    //3 normal
-            -10.0,10.0,10.0,         //4 position
+            0.0,0.0,2.0,                //4 position
             -sqrt13,sqrt13,sqrt13,      //4 normal
-            10.0,10.0,10.0,          //5 position
+            2.0,0.0,2.0,                //5 position
             sqrt13,sqrt13,sqrt13,       //5 normal
-            10.0,-10.0,10.0,         //6 position
+            4.0,0.0,2.0,                //6 position
             sqrt13,-sqrt13,sqrt13,      //6 normal
-            -10.0,-10.0,10.0,        //7 position
+            6.0,0.0,2.0,                //7 position
+            -sqrt13,-sqrt13,sqrt13,     //7 normal
+            0.0,0.0,4.0,                //0 position
+            -sqrt13,sqrt13,-sqrt13,     //0 normal
+            2.0,0.0,4.0,                //1 position
+            sqrt13,sqrt13,-sqrt13,      //1 normal
+            4.0,0.0,4.0,                //2 position
+            sqrt13,-sqrt13,-sqrt13,     //2 normal
+            6.0,0.0,4.0,                //3 position
+            -sqrt13,-sqrt13,-sqrt13,    //3 normal
+            0.0,0.0,6.0,                //4 position
+            -sqrt13,sqrt13,sqrt13,      //4 normal
+            2.0,0.0,6.0,                //5 position
+            sqrt13,sqrt13,sqrt13,       //5 normal
+            4.0,0.0,6.0,                //6 position
+            sqrt13,-sqrt13,sqrt13,      //6 normal
+            6.0,0.0,6.0,                //7 position
             -sqrt13,-sqrt13,sqrt13,     //7 normal
     };
+    
+  //  float vertices[vbufCount] = {
+  //          -10.0,10.0,-10.0,        //0 position
+  //          -sqrt13,sqrt13,-sqrt13,     //0 normal
+  //          10.0,10.0,-10.0,         //1 position
+  //          sqrt13,sqrt13,-sqrt13,      //1 normal
+  //          10.0,-10.0,-10.0,        //2 position
+  //          sqrt13,-sqrt13,-sqrt13,     //2 normal
+  //          -10.0,-10.0,-10.0,       //3 position
+  //          -sqrt13,-sqrt13,-sqrt13,    //3 normal
+  //          -10.0,10.0,10.0,         //4 position
+  //          -sqrt13,sqrt13,sqrt13,      //4 normal
+  //          10.0,10.0,10.0,          //5 position
+  //          sqrt13,sqrt13,sqrt13,       //5 normal
+  //          10.0,-10.0,10.0,         //6 position
+  //          sqrt13,-sqrt13,sqrt13,      //6 normal
+  //          -10.0,-10.0,10.0,        //7 position
+  //          -sqrt13,-sqrt13,sqrt13,     //7 normal
+  //  };
 
     
     Ogre::RenderSystem* rs = this->m_Root->getSingleton().getRenderSystem();
@@ -486,20 +521,26 @@ void RagDollApp::createColourCube()
 
     /// Define 12 triangles (two triangles per cube face)
     /// The values in this table refer to vertices in the above table
-    const size_t ibufCount = 36;
+    const size_t ibufCount = 54;
     unsigned short faces[ibufCount] = {
-            0,2,3,
-            0,1,2,
-            1,6,2,
-            1,5,6,
-            4,6,5,
-            4,7,6,
-            0,7,4,
-            0,3,7,
+            0,5,4,
             0,5,1,
-            0,4,5,
+            1,5,2,
+            2,5,6,
+            2,6,7,
             2,7,3,
-            2,6,7
+            4,8,5,
+            5,8,9,
+            5,9,10,
+            5,10,6,
+            6,10,7,
+            7,10,11,
+            8,12,13,
+            8,13,9,
+            9,13,10,
+            10,14,13,
+            10,15,14,
+            10,11,15
     };
 
     /// Create vertex data structure for 8 vertices shared between submeshes
