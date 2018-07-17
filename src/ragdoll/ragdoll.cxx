@@ -467,22 +467,22 @@ void RagDollApp::createColourCube()
             sqrt13,-sqrt13,sqrt13,      //6 normal
             6.0,0.0,2.0,                //7 position
             -sqrt13,-sqrt13,sqrt13,     //7 normal
-            0.0,0.0,4.0,                //0 position
-            -sqrt13,sqrt13,-sqrt13,     //0 normal
-            2.0,0.0,4.0,                //1 position
-            sqrt13,sqrt13,-sqrt13,      //1 normal
-            4.0,0.0,4.0,                //2 position
-            sqrt13,-sqrt13,-sqrt13,     //2 normal
-            6.0,0.0,4.0,                //3 position
-            -sqrt13,-sqrt13,-sqrt13,    //3 normal
-            0.0,0.0,6.0,                //4 position
-            -sqrt13,sqrt13,sqrt13,      //4 normal
-            2.0,0.0,6.0,                //5 position
-            sqrt13,sqrt13,sqrt13,       //5 normal
-            4.0,0.0,6.0,                //6 position
-            sqrt13,-sqrt13,sqrt13,      //6 normal
-            6.0,0.0,6.0,                //7 position
-            -sqrt13,-sqrt13,sqrt13,     //7 normal
+            0.0,0.0,4.0,                //8 position
+            -sqrt13,sqrt13,-sqrt13,     //8 normal
+            2.0,0.0,4.0,                //9 position
+            sqrt13,sqrt13,-sqrt13,      //9 normal
+            4.0,0.0,4.0,                //10 position
+            sqrt13,-sqrt13,-sqrt13,     //10 normal
+            6.0,0.0,4.0,                //11 position
+            -sqrt13,-sqrt13,-sqrt13,    //11 normal
+            0.0,0.0,6.0,                //12 position
+            -sqrt13,sqrt13,sqrt13,      //12 normal
+            2.0,0.0,6.0,                //13 position
+            sqrt13,sqrt13,sqrt13,       //13 normal
+            4.0,0.0,6.0,                //14 position
+            sqrt13,-sqrt13,sqrt13,      //14 normal
+            6.0,0.0,6.0,                //15 position
+            -sqrt13,-sqrt13,sqrt13,     //15 normal
     };
     
   //  float vertices[vbufCount] = {
@@ -538,9 +538,9 @@ void RagDollApp::createColourCube()
             8,12,13,
             8,13,9,
             9,13,10,
-            10,14,13,
-            10,15,14,
-            10,11,15
+            13,14,10,
+            15,10,14,
+            10,15,11
     };
 
     /// Create vertex data structure for 8 vertices shared between submeshes
