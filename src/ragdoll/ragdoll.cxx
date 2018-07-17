@@ -523,7 +523,7 @@ void RagDollApp::createColourCube()
     /// The values in this table refer to vertices in the above table
     const size_t ibufCount = 54;
     unsigned short faces[ibufCount] = {
-            0,5,4,
+            0,4,5,
             0,5,1,
             1,5,2,
             2,5,6,
