@@ -485,6 +485,7 @@ void RagDollApp::createColourCube()
             -sqrt13,-sqrt13,sqrt13,     //15 normal
     };
     
+   //cube mesh 
   //  float vertices[vbufCount] = {
   //          -10.0,10.0,-10.0,        //0 position
   //          -sqrt13,sqrt13,-sqrt13,     //0 normal
