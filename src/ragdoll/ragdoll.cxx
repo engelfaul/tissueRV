@@ -447,7 +447,7 @@ void RagDollApp::createColourCube()
 
     const float sqrt13 = 0.577350269f; /* sqrt(1/3) */
 
-    /// Define the vertices (8 vertices, each have 3 floats for position and 3 for normal)
+    /// Define the vertices (16 vertices, each have 3 floats for position and 3 for normal)
     const size_t nVertices = 16;
     const size_t vbufCount = 3*2*nVertices;
     float vertices[vbufCount] = {
