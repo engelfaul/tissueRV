@@ -445,12 +445,14 @@ void RagDollApp::createColourCube()
     /// Create one submesh
     Ogre::SubMesh* sub = msh->createSubMesh();
 
-    const float sqrt13 = 0.577350269f; /* sqrt(1/3) */
+    //const float sqrt13 = 0.577350269f; /* sqrt(1/3) */
 
     /// Define the vertices (16 vertices, each have 3 floats for position and 3 for normal)
-    const size_t nVertices = 16;
-    const size_t vbufCount = 3*2*nVertices;
-    float vertices[vbufCount] = {
+    //const size_t nVertices = 16;
+    //const size_t vbufCount = 3*2*nVertices;
+    //float verts[vbufCount] = {
+    /*
+     float  verts[]   = {  
             0.0,0.0,0.0,                //0 position
             -sqrt13,sqrt13,-sqrt13,     //0 normal
             2.0,0.0,0.0,                //1 position
@@ -483,8 +485,8 @@ void RagDollApp::createColourCube()
             sqrt13,-sqrt13,sqrt13,      //14 normal
             6.0,0.0,6.0,                //15 position
             -sqrt13,-sqrt13,sqrt13,     //15 normal
-    };
-    
+          };
+    */
    //cube mesh 
   //  float vertices[vbufCount] = {
   //          -10.0,10.0,-10.0,        //0 position
@@ -562,7 +564,7 @@ void RagDollApp::createColourCube()
         Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
         offset, msh->sharedVertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
     /// Upload the vertex data to the card
-    vbuf->writeData(0, vbuf->getSizeInBytes(), vertices, true);
+    vbuf->writeData(0, vbuf->getSizeInBytes(), verts, true);
 
     /// Set vertex buffer binding so buffer 0 is bound to our vertex buffer
     Ogre::VertexBufferBinding* bind = msh->sharedVertexData->vertexBufferBinding; 
