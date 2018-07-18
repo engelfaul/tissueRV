@@ -411,7 +411,7 @@ keyPressed( const OIS::KeyEvent& arg )
   } 
     planeBlender_node->translate(dx,dy,dz);
     
-
+  
 /////////////////////////////////////Buscando si hay colision/////////////////////////////////////////////////////////////////
   //Ogre::Vector3 posTool = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);
   Ogre::Plane plano;
@@ -524,6 +524,7 @@ void RagDollApp::createColourCube()
 
     /// Define 12 triangles (two triangles per cube face)
     /// The values in this table refer to vertices in the above table
+    /*
     const size_t ibufCount = 54;
     unsigned short faces[ibufCount] = {
             0,4,5,
@@ -545,7 +546,7 @@ void RagDollApp::createColourCube()
             15,10,14,
             10,15,11
     };
-
+    */
     /// Create vertex data structure for 8 vertices shared between submeshes
     msh->sharedVertexData = new Ogre::VertexData();
     msh->sharedVertexData->vertexCount = nVertices;

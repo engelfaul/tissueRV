@@ -78,6 +78,30 @@ namespace pujOgre
             6.0,0.0,6.0,                //15 position
             -sqrt13,-sqrt13,sqrt13,     //15 normal
           };
+
+    /// Define 12 triangles (two triangles per cube face)
+    /// The values in this table refer to vertices in the above table
+    static const size_t ibufCount = 54;
+    unsigned short faces[ibufCount] = {
+            0,4,5,
+            0,5,1,
+            1,5,2,
+            2,5,6,
+            2,6,7,
+            2,7,3,
+            4,8,5,
+            5,8,9,
+            5,9,10,
+            5,10,6,
+            6,10,7,
+            7,10,11,
+            8,12,13,
+            8,13,9,
+            9,13,10,
+            13,14,10,
+            15,10,14,
+            10,15,11
+    };      
   
   protected:
     virtual void createScene( ) = 0;
