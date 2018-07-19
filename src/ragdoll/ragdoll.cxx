@@ -33,7 +33,8 @@ public:
 //  size_t vertex_count;
 //  size_t index_count;
   void setMesh();
-  void createColourCube();	
+  void createColourCube();
+  void setCut(int trian );	
 protected:
   virtual void createScene( ) override;
   virtual void createCamera( ) override;
@@ -233,7 +234,7 @@ createScene( )
   Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("cc", "ColourCube");
   thisEntity->setMaterialName("Mat");
   Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-  thisSceneNode->setPosition(0, 5, 0);
+ // thisSceneNode->setPosition(0, 5, 0);
   thisSceneNode->attachObject(thisEntity);
 }
 
@@ -447,9 +448,11 @@ keyPressed( const OIS::KeyEvent& arg )
       
       //std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n";
       std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay, pointA , pointB , pointC ,true , true);
-      
+      std::cout <<"first: "<< inter.first << "second: " << inter.second <<"\n";
       if(inter.first && inter.second < 1){
-      std::cout <<"colision triangulo objetivo: "<< aux <<"\n"; 
+      std::cout <<"colision triangulo objetivo: "<< aux <<"\n";
+        RagDollApp  * a  = new RagDollApp();
+         a->RagDollApp::setCut( aux ); //renderizar de nuevo el mesh sin el triangulo colisionado 
       }
 
       aux++;
@@ -633,5 +636,10 @@ void RagDollApp::createColourCube()
     /// Notify -Mesh object that it has been loaded
     msh->load();
 }
+
+ void RagDollApp::setCut(int trian ){
+   //Borrando triangulo
+   std::cout <<"Borrar Triangulo: "<< trian <<"\n";
+ }
 
 // eof - $RCSfile$
