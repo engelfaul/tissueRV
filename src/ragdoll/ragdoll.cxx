@@ -422,6 +422,8 @@ keyPressed( const OIS::KeyEvent& arg )
   std::cout <<"dirx "<< normal.x << " diry " << normal.y << " dirz " << normal.z <<"\n";
   Ogre::Ray toolRay = Ogre::Ray(posTool, normal);
   std::cout<< "origen rayo " << toolRay.getOrigin() << " direccion " << toolRay.getDirection() << "\n";
+  
+  //Plano blender
   for (size_t i = 0; i < index_count; i += 3){
     plano = Ogre::Plane(vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]);
     std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay,vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]],true , true);
@@ -429,6 +431,14 @@ keyPressed( const OIS::KeyEvent& arg )
     if(inter.first && inter.second < 1){
       std::cout <<"colision triangulo objetivo: "<< i <<"\n"; 
     }
+  }
+
+  //Plano manual
+  int aux=1;
+  for(size_t i = 0; i< ibufCount ; i += 3){
+      //float a = faces[i]:
+      std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n"; 
+      aux++;
   }
 ////////////////////////////////////Fin Buscando colision/////////////////////////////////////////////////////////////////////
 
