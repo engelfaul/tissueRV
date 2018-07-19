@@ -204,10 +204,10 @@ createScene( )
       "tool_node"
       );
   tool_node->attachObject( tool );
-  tool_node->translate(0,10,0);
+  tool_node->translate(0,15,0);
 
-  posTool   = Ogre::Vector3(0,10,0); 
-  direccion = Ogre::Vector3(0,9,0);
+  posTool   = Ogre::Vector3(0,15,0); 
+  direccion = Ogre::Vector3(0,14,0);
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Associate ship to the physical world
@@ -429,16 +429,31 @@ keyPressed( const OIS::KeyEvent& arg )
     std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay,vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]],true , true);
     
     if(inter.first && inter.second < 1){
-      std::cout <<"colision triangulo objetivo: "<< i <<"\n"; 
+    //  std::cout <<"colision triangulo objetivo: "<< i <<"\n"; 
     }
   }
 
   //Plano manual
-  int aux=1;
+  int aux=0;
   for(size_t i = 0; i< ibufCount ; i += 3){
-      //float a = faces[i]:
-      std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n"; 
+      //std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n"; 
+      int side_a = faces[i];
+      int side_b = faces[i+1];
+      int side_c = faces[i+2];
+      
+      Ogre::Vector3  pointA =  Ogre::Vector3(verts[side_a*6],verts[(side_a*6)+1],verts[(side_a*6)+2]);
+      Ogre::Vector3  pointB =  Ogre::Vector3(verts[side_b*6],verts[(side_b*6)+1],verts[(side_b*6)+2]);
+      Ogre::Vector3  pointC =  Ogre::Vector3(verts[side_c*6],verts[(side_c*6)+1],verts[(side_c*6)+2]);
+      
+      //std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n";
+      std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay, pointA , pointB , pointC ,true , true);
+      
+      if(inter.first && inter.second < 1){
+      std::cout <<"colision triangulo objetivo: "<< aux <<"\n"; 
+      }
+
       aux++;
+
   }
 ////////////////////////////////////Fin Buscando colision/////////////////////////////////////////////////////////////////////
 
