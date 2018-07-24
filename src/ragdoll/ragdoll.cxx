@@ -641,6 +641,7 @@ void RagDollApp::createColourCube()
    //Borrando triangulo
    std::cout <<"Borrar Triangulo: "<< trian <<"\n";
    std::cout <<"borrar vertices: "<< faces[3 * trian]  << " " << faces[(3 * trian)+1] << " " << faces[(3 * trian)+2] <<"\n";
+   //
    
  }
 
