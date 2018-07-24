@@ -418,11 +418,11 @@ keyPressed( const OIS::KeyEvent& arg )
   Ogre::Plane plano;
   Ogre::Vector3 posTool = planeBlender_node->getPosition();
   posTool.y=posTool.y-6.5; //la punta de instrumento esta siete unidades abajo del centro
-  std::cout <<"posx "<< posTool.x << " posy " << posTool.y << " posz " << posTool.z <<"\n";
+  //std::cout <<"posx "<< posTool.x << " posy " << posTool.y << " posz " << posTool.z <<"\n";
   Ogre::Vector3 normal=Ogre::Vector3(posTool.x,-0.5,posTool.z);
-  std::cout <<"dirx "<< normal.x << " diry " << normal.y << " dirz " << normal.z <<"\n";
+  //std::cout <<"dirx "<< normal.x << " diry " << normal.y << " dirz " << normal.z <<"\n";
   Ogre::Ray toolRay = Ogre::Ray(posTool, normal);
-  std::cout<< "origen rayo " << toolRay.getOrigin() << " direccion " << toolRay.getDirection() << "\n";
+  //std::cout<< "origen rayo " << toolRay.getOrigin() << " direccion " << toolRay.getDirection() << "\n";
   
   //Plano blender
   for (size_t i = 0; i < index_count; i += 3){
@@ -448,9 +448,9 @@ keyPressed( const OIS::KeyEvent& arg )
       
       //std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n";
       std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay, pointA , pointB , pointC ,true , true);
-      std::cout <<"first: "<< inter.first << "second: " << inter.second <<"\n";
+      //std::cout <<"first: "<< inter.first << "second: " << inter.second <<"\n";
       if(inter.first && inter.second < 1){
-      std::cout <<"colision triangulo objetivo: "<< aux <<"\n";
+      //std::cout <<"colision triangulo objetivo: "<< aux <<"\n";
         RagDollApp  * a  = new RagDollApp();
          a->RagDollApp::setCut( aux ); //renderizar de nuevo el mesh sin el triangulo colisionado 
       }
@@ -640,6 +640,8 @@ void RagDollApp::createColourCube()
  void RagDollApp::setCut(int trian ){
    //Borrando triangulo
    std::cout <<"Borrar Triangulo: "<< trian <<"\n";
+   std::cout <<"borrar vertices: "<< faces[3 * trian]  << " " << faces[(3 * trian)+1] << " " << faces[(3 * trian)+2] <<"\n";
+   
  }
 
 // eof - $RCSfile$
