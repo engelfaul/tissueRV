@@ -101,7 +101,9 @@ namespace pujOgre
             13,14,10,
             15,10,14,
             10,15,11
-    };      
+    }; 
+
+    unsigned short *facesTemp;     
   
   protected:
     virtual void createScene( ) = 0;
