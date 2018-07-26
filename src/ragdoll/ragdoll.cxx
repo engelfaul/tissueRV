@@ -153,7 +153,7 @@ createScene( )
       "ninja_node"
       );
   ninja_node->attachObject( ninja );
-
+  ninja_node->translate(0,0,0);
   //////////Objeto de prueba
     // Load model entity
   Ogre::Entity* ship =
@@ -225,7 +225,7 @@ createScene( )
   q.normalise( );
   this->addPhysicsConvex(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 1, 0 ),
+    Ogre::Vector3( -10, -bbox.getMinimum( )[ 1 ] * 1, -10 ),
     q
     );
 
@@ -642,24 +642,26 @@ void RagDollApp::createColourCube()
    std::cout <<"Borrar Triangulo: "<< trian <<"\n";
    std::cout <<"borrar vertices: "<< faces[3 * trian]  << " " << faces[(3 * trian)+1] << " " << faces[(3 * trian)+2] <<"\n";
    //
+   unsigned short *facesTemp;
     size_t temp = 0;
    for (size_t i = 0; i< ibufCount ; i += 3){
      
      if(i == (3* trian)){
         std::cout <<"Eliminando triangulo: "<< i/3 <<"\n";
      }else {
-       std::cout <<"Copiando triangulos "<< i/3 << " al " << temp/3 <<"\n";
-        //facesTemp[temp]   =   faces[i];
-        //facesTemp[temp+1] =   faces[(i)+1];
-        //facesTemp[temp+2] =   faces[(i)+2];
-        facesTemp[temp]   =   0;
-        facesTemp[temp+1] =   0;
-        facesTemp[temp+2] =   0;
-        temp = temp + 3 ;   
+       //std::cout <<"Copiando triangulos "<< i/3 << " al " << temp/3 <<"\n";
+        facesTemp[temp]   =   faces[i];
+        facesTemp[temp+1] =   faces[(i)+1];
+        facesTemp[temp+2] =   faces[(i)+2];
+        //facesTemp[temp]   =   0;
+        //facesTemp[temp+1] =   0;
+        //facesTemp[temp+2] =   0;
+        //temp = temp + 3 ;   
     } 
 
    }
-   
+   //facesTemp[0] = 0;
+   std::cout <<"Copiado de triangulos finalizado " <<"\n";
  }
 
 // eof - $RCSfile$
