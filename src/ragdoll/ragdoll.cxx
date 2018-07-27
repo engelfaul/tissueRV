@@ -236,6 +236,10 @@ createScene( )
   Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
  // thisSceneNode->setPosition(0, 5, 0);
   thisSceneNode->attachObject(thisEntity);
+
+  for(short i=0 ; i<(ibufCount/3) ; i++){
+    indi[i]= 1;
+  }
 }
 
 // -------------------------------------------------------------------------
@@ -642,8 +646,25 @@ void RagDollApp::createColourCube()
    std::cout <<"Borrar Triangulo: "<< trian <<"\n";
    std::cout <<"borrar vertices: "<< faces[3 * trian]  << " " << faces[(3 * trian)+1] << " " << faces[(3 * trian)+2] <<"\n";
    //
+   indi[trian] = 0;
    unsigned short *facesTemp;
     size_t temp = 0;
+
+    for(size_t i = 0; i< (ibufCount/3); i++){
+      /*
+      if(indi[i] == true){
+        int k=i*3;
+        //facesTemp[temp]   =   faces[k];
+        //facesTemp[temp+1] =   faces[(k)+1];
+        //facesTemp[temp+2] =   faces[(k)+2];
+        //temp              = temp + 3; 
+      }else {
+        std::cout <<"Eliminando triangulo: "<< i <<"\n";
+      }
+      */
+      std::cout <<"Indi "<< i <<": "<< indi[i]<<"\n";
+    }
+   /* 
    for (size_t i = 0; i< ibufCount ; i += 3){
      
      if(i == (3* trian)){
@@ -660,8 +681,9 @@ void RagDollApp::createColourCube()
     } 
 
    }
+   */
    //facesTemp[0] = 0;
-   std::cout <<"Copiado de triangulos finalizado " <<"\n";
+  // std::cout <<"Copiado de triangulos finalizado " <<"\n";
  }
 
 // eof - $RCSfile$

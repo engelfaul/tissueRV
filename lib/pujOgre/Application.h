@@ -79,7 +79,7 @@ namespace pujOgre
             -sqrt13,-sqrt13,sqrt13,     //15 normal
           };
 
-    /// Define 12 triangles (two triangles per cube face)
+    /// Define 18 triangles (two triangles per cube face)
     /// The values in this table refer to vertices in the above table
     static const size_t ibufCount = 54;
     unsigned short faces[ibufCount] = {
@@ -103,6 +103,9 @@ namespace pujOgre
             10,15,11
     }; 
 
+    int indi[ibufCount/3] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; 
+    
+  
     //unsigned short *facesTemp;     
   
   protected:
