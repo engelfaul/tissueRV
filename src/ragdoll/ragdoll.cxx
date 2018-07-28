@@ -237,6 +237,8 @@ createScene( )
  // thisSceneNode->setPosition(0, 5, 0);
   thisSceneNode->attachObject(thisEntity);
 
+ //indi = new int[ibufCount/3];
+
   for(short i=0 ; i<(ibufCount/3) ; i++){
     indi[i]= 1;
   }
@@ -368,7 +370,7 @@ void RagDollApp::setMesh(){
         ibuf->unlock();
         current_offset = next_offset;
     }
-
+ 
     bool new_closest_found = false;
     for (size_t i = 0; i < index_count; i += 3)
     {
@@ -651,19 +653,21 @@ void RagDollApp::createColourCube()
     size_t temp = 0;
 
     for(size_t i = 0; i< (ibufCount/3); i++){
-      /*
-      if(indi[i] == true){
+      
+      if(indi[i] == 1){
         int k=i*3;
         //facesTemp[temp]   =   faces[k];
         //facesTemp[temp+1] =   faces[(k)+1];
         //facesTemp[temp+2] =   faces[(k)+2];
         //temp              = temp + 3; 
       }else {
-        std::cout <<"Eliminando triangulo: "<< i <<"\n";
+       // std::cout <<"Eliminando triangulo: "<< i <<"\n";
       }
-      */
+      //esta imprimiento mal el indicador
       std::cout <<"Indi "<< i <<": "<< indi[i]<<"\n";
     }
+
+   
    /* 
    for (size_t i = 0; i< ibufCount ; i += 3){
      

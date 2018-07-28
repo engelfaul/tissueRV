@@ -103,10 +103,9 @@ namespace pujOgre
             10,15,11
     }; 
 
-    int indi[ibufCount/3] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; 
-    
+    //int indi[ibufCount/3] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; 
+    int *indi = new int[ibufCount/3];
   
-    //unsigned short *facesTemp;     
   
   protected:
     virtual void createScene( ) = 0;
