@@ -19,6 +19,16 @@ namespace pujOgreBullet
   public:
     typedef Application          Self;
     typedef pujOgre::Application Superclass;
+    void notify(
+      Ogre::Entity* entity,
+      Ogre::SceneNode* node,
+      const std::string& name,
+      float bodyRestitution,
+      float bodyFriction,
+      float bodyMass,
+      const Ogre::Vector3& position,
+      const Ogre::Quaternion& orientation
+    ); //notificar cambio
 
   public:
     Application( );

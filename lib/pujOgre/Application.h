@@ -35,6 +35,7 @@ namespace pujOgre
     virtual ~Application( );
 
     virtual void go( );
+
     size_t vertex_count;
     size_t index_count;
     Ogre::Vector3 *vertices;
