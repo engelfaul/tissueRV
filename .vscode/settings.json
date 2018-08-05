@@ -46,6 +46,10 @@
         "type_traits": "cpp",
         "tuple": "cpp",
         "typeindex": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "bitset": "cpp",
+        "list": "cpp",
+        "unordered_set": "cpp",
+        "memory": "cpp"
     }
 }

@@ -120,6 +120,8 @@ namespace pujOgreBullet
       const Ogre::Quaternion& orientation
     );
 
+    void updatePhysics();
+
   protected:
     OgreBulletDynamics::DynamicsWorld* m_BulletWorld;
   };

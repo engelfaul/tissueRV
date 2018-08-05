@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <pujOgreBullet/Application.h>
 
 #include <OgreBulletCollisionsBoxShape.h>
@@ -225,5 +227,12 @@ addSoftPhysicsTrimesh(
     body->setDebugDisplayEnabled(true);
 }
 
+// -------------------------------------------------------------------------
+void pujOgreBullet::Application::
+updatePhysics()
+{
+  std::cout <<"Actualizando fisica " <<"\n";
+  
+}
 
 // eof - $RCSfile$
