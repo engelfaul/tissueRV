@@ -109,33 +109,7 @@ createScene( )
 {
   this->Superclass::createScene( );
 
-//////////////////////////implementando cuerpo blando a base de la implementacion de VTK-Bullet//////////////////////////////////////////////////
-double sx, sy, sz, rx, ry, rz, tx, ty, tz;
-sx = sy = sz = 1.0;
-rx = ry = rz = tx = ty = tz = 0.0;
-double dPR = 0.0;
-bool inflates = true;
-double kLST, kAST, kVST;
-kLST = kAST = kVST = 0.1;
-double mass = 10;
-bool isRigid = 0;
-btScalar kVCF = 1;      // Velocities correction factor (Baumgarte)
-btScalar kDP = 0;       // Damping coefficient [0,1]
-btScalar kDG = 0;       // Drag coefficient [0,+inf]
-btScalar kLF = 0;       // Lift coefficient [0,+inf]
-btScalar kPR = 0;       // Pressure coefficient [-inf,+inf]
-btScalar kVC = 0;       // Volume conversation coefficient [0,+inf]
-btScalar kDF = 1;     // Dynamic friction coefficient [0,1]
-btScalar kMT = 0;       // Pose matching coefficient [0,1]
-btScalar kCHR = 1;      // Rigid contacts hardness [0,1]
-btScalar kKHR = 0.1;    // Kinetic contacts hardness [0,1]
-btScalar kSHR = 1;      // Soft contacts hardness [0,1]
-btScalar kAHR = 0.1;    // Anchors hardness [0,1]
-btScalar maxvolume = 1; // Maximum volume ratio for pose
-btScalar timescale = 1; // Time scale
-int viterations = 0;    // Velocities solver iterations
-int piterations = 5;    // Positions solver iterations
-int diterations = 0;    // Drift solver iterations
+
 
  // Create a plane
   Ogre::Plane plane( Ogre::Vector3::UNIT_Y, 0 );
