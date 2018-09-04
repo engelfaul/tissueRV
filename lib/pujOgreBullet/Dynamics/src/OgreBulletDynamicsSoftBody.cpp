@@ -217,7 +217,7 @@ namespace OgreBulletDynamics
                             
                             posElem->baseVertexPointerToElement(pVert , &pReal);
                             pVert += vSize;
-                            
+                            //pendiente transformar
                              //npoints = mTransform * (npoints);
                             (*pReal++) = npoints[j].x;    
                             (*pReal++) = npoints[j].y;    
