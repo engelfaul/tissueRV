@@ -1,6 +1,7 @@
 #include <iostream>
 #include <pujOgreBullet/Application.h>
 
+#include <OgreManualObject.h>
 #include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreMeshManager.h>
@@ -13,6 +14,9 @@
 #include <OgreMeshManager.h>
 #include <OgreColourValue.h>
 #include <OgreRoot.h>
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
+#include "../softObject/SceneSoftObject.h" 
 
 /**
  */
@@ -34,10 +38,13 @@ public:
 //  size_t index_count;
   void setMesh();
   void createColourCube();
-  void updateMesh(int trian );	
+  void updateMesh(int trian );
+  void UpdatePhysics(std::chrono::duration<double> deltaTime);	
 protected:
   virtual void createScene( ) override;
   virtual void createCamera( ) override;
+  virtual bool frameRenderingQueued( const Ogre::FrameEvent& evt ) override;
+  Ogre::AnimationState* m_AnimationState;
 };
 
 // -------------------------------------------------------------------------
@@ -102,23 +109,35 @@ createScene( )
 {
   this->Superclass::createScene( );
 
-  // Lights
-  this->m_SceneMgr->setAmbientLight( Ogre::ColourValue( 1, 1, 1 ) );
-  this->m_SceneMgr->setShadowTechnique( Ogre::SHADOWTYPE_STENCIL_ADDITIVE );
+//////////////////////////implementando cuerpo blando a base de la implementacion de VTK-Bullet//////////////////////////////////////////////////
+double sx, sy, sz, rx, ry, rz, tx, ty, tz;
+sx = sy = sz = 1.0;
+rx = ry = rz = tx = ty = tz = 0.0;
+double dPR = 0.0;
+bool inflates = true;
+double kLST, kAST, kVST;
+kLST = kAST = kVST = 0.1;
+double mass = 10;
+bool isRigid = 0;
+btScalar kVCF = 1;      // Velocities correction factor (Baumgarte)
+btScalar kDP = 0;       // Damping coefficient [0,1]
+btScalar kDG = 0;       // Drag coefficient [0,+inf]
+btScalar kLF = 0;       // Lift coefficient [0,+inf]
+btScalar kPR = 0;       // Pressure coefficient [-inf,+inf]
+btScalar kVC = 0;       // Volume conversation coefficient [0,+inf]
+btScalar kDF = 1;     // Dynamic friction coefficient [0,1]
+btScalar kMT = 0;       // Pose matching coefficient [0,1]
+btScalar kCHR = 1;      // Rigid contacts hardness [0,1]
+btScalar kKHR = 0.1;    // Kinetic contacts hardness [0,1]
+btScalar kSHR = 1;      // Soft contacts hardness [0,1]
+btScalar kAHR = 0.1;    // Anchors hardness [0,1]
+btScalar maxvolume = 1; // Maximum volume ratio for pose
+btScalar timescale = 1; // Time scale
+int viterations = 0;    // Velocities solver iterations
+int piterations = 5;    // Positions solver iterations
+int diterations = 0;    // Drift solver iterations
 
-  Ogre::Light* light1 = this->m_SceneMgr->createLight( "Light1" );
-  light1->setType( Ogre::Light::LT_POINT );
-  light1->setPosition( Ogre::Vector3( 50, 50, 50 ) );
-  light1->setDiffuseColour( 1.0, 1.0, 1.0 );
-  light1->setSpecularColour( 1.0, 1.0, 1.0 );
-
-  Ogre::Light* light2 = this->m_SceneMgr->createLight( "Light2" );
-  light2->setType( Ogre::Light::LT_POINT );
-  light2->setPosition( Ogre::Vector3( 0, 50, -50 ) );
-  light2->setDiffuseColour( 0.5, 0.5, 0.5 );
-  light2->setSpecularColour( 0.5, 0.5, 0.5 );
-
-  // Create a plane
+ // Create a plane
   Ogre::Plane plane( Ogre::Vector3::UNIT_Y, 0 );
   Ogre::MeshManager::getSingleton( ).
     createPlane(
@@ -138,6 +157,107 @@ createScene( )
   this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 
 
+ 
+   ///Prueba generacion manual de un mesh /////comentariado para probar el manualobject
+  /*
+  createColourCube(); 
+  Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("pielEnity", "ColourCube");
+  thisEntity->setMaterialName("Mat");
+  Ogre::AxisAlignedBox bboxSoft = thisEntity->getBoundingBox( );
+  Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+  thisSceneNode->setPosition(0, 5, 0);
+  thisSceneNode->attachObject(thisEntity);
+  std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
+
+//Agregar el objeto blando al mundo fisico
+  Ogre::Quaternion qsoft( 1, 1, 1, 1 );
+  qsoft.normalise( );
+  this->addSoftPhysicsTrimesh(
+    thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
+    Ogre::Vector3( 0, 5, 0 ),
+    qsoft
+    );
+  */
+   ///prueba clase tipo suave
+   //std::shared_ptr<SceneSoftObject> softObject(new SceneSoftObject(thisEntity));
+  //SceneSoftObject* so = new SceneSoftObject(thisEntity);
+  //softObject->InitSoftBody(this->m_BulletWorld->softBodyWorldInfo)
+
+//prueba clase manual object
+Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
+man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+    man->position(-20, 20, 20);
+    man->normal(0, 0, 1);
+    man->textureCoord(0, 0);
+    man->position(-20, -20, 20);
+    man->normal(0, 0, 1);
+    man->textureCoord(0, 1);
+    man->position(20, -20, 20);
+    man->normal(0, 0, 1);
+    man->textureCoord(1, 1);
+    man->position(20, 20, 20);
+    man->normal(0, 0, 1);
+    man->textureCoord(1, 0);
+// https://forums.ogre3d.org/viewtopic.php?t=32747 revisar
+    man->quad(0, 1, 2, 3);
+    man->end();
+    //Ogre::SceneNode* manNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+    //manNode->attachObject(man); 
+
+
+    man->beginUpdate(0);
+    man->position(-5, 5, 5);
+    man->position(-5, -5, 5);
+    man->position(5, -5, 5);
+    man->position(5, 5, 5);
+    man->quad(0, 1, 2, 3);
+    man->end();
+
+    Ogre::MeshPtr meshTest = man->convertToMesh("test");
+    //Agregar el objeto blando al mundo geometrico y al mundo fisico
+    Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("pielEnity", "test");
+      //thisEntity->setMaterialName("Mat");
+      Ogre::AxisAlignedBox bboxSoft = thisEntity->getBoundingBox( );
+      Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+      thisSceneNode->setPosition(0, 5, 0);
+      thisSceneNode->attachObject(thisEntity);
+      std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
+
+    //Agregar el objeto blando al mundo fisico
+      Ogre::Quaternion qsoft( 1, 1, 1, 1 );
+      qsoft.normalise( );
+      this->addSoftPhysicsTrimesh(
+        thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
+        Ogre::Vector3( 0, 5, 0 ),
+        qsoft
+        );
+    man->beginUpdate(0);
+    man->position(-20, 20, 20);
+    man->position(-20, -20, 20);
+    man->position(20, -20, 20);
+    man->position(20, 20, 20);
+    man->quad(0, 1, 2, 3);
+    man->end();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Lights
+  this->m_SceneMgr->setAmbientLight( Ogre::ColourValue( 1, 1, 1 ) );
+  this->m_SceneMgr->setShadowTechnique( Ogre::SHADOWTYPE_STENCIL_ADDITIVE );
+
+  Ogre::Light* light1 = this->m_SceneMgr->createLight( "Light1" );
+  light1->setType( Ogre::Light::LT_POINT );
+  light1->setPosition( Ogre::Vector3( 50, 50, 50 ) );
+  light1->setDiffuseColour( 1.0, 1.0, 1.0 );
+  light1->setSpecularColour( 1.0, 1.0, 1.0 );
+
+  Ogre::Light* light2 = this->m_SceneMgr->createLight( "Light2" );
+  light2->setType( Ogre::Light::LT_POINT );
+  light2->setPosition( Ogre::Vector3( 0, 50, -50 ) );
+  light2->setDiffuseColour( 0.5, 0.5, 0.5 );
+  light2->setSpecularColour( 0.5, 0.5, 0.5 );
+
+ 
 // -------------------------------------------------------
   // Load model entity
   Ogre::Entity* ninja =
@@ -153,7 +273,7 @@ createScene( )
       "ninja_node"
       );
   ninja_node->attachObject( ninja );
-  ninja_node->translate(0,0,0);
+  ninja_node->translate(0,10,0);
   //////////Objeto de prueba
     // Load model entity
   Ogre::Entity* ship =
@@ -169,7 +289,7 @@ createScene( )
       "ship_node"
       );
   ship_node->attachObject( ship );
-
+/*
   //////////Objeto piel
     // Load model entity
   Ogre::Entity* tissue =
@@ -187,7 +307,7 @@ createScene( )
   tissue_node->attachObject( tissue );
   tissue_node->translate(0,1,0);
   setMesh();
-
+*/
 //Se puede transformar el objeto piel en ogre o en blender (para blender recordar aplicar con ctrl + A)
 
   ////////////////////////////Objeto herramienta/////////////////////////////////////
@@ -211,31 +331,16 @@ createScene( )
   direccion = Ogre::Vector3(0,14,0);
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Associate ship to the physical world
-  Ogre::Quaternion q2( 1, 1, 2, 3 );
-  q2.normalise( );
-  this->addSoftPhysicsTrimesh(
-    ship, ship_node, "ship_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( 0, -bbox.getMinimum( )[ 1 ] * 2, 0 ),
-    q2
-    );
 
   // Associate ninja to the physical world
   Ogre::Quaternion q( 1, 1, 2, 3 );
   q.normalise( );
   this->addPhysicsConvex(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( -10, -bbox.getMinimum( )[ 1 ] * 1, -10 ),
+    Ogre::Vector3( -10, 20, -10 ),
     q
     );
 
-///////////////////Prueba generacion manual de un mesh ////////////////////////////
-  createColourCube(); 
-  Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("cc", "ColourCube");
-  thisEntity->setMaterialName("Mat");
-  Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
- // thisSceneNode->setPosition(0, 5, 0);
-  thisSceneNode->attachObject(thisEntity);
 
  //indi = new int[ibufCount/3];
 
@@ -375,8 +480,8 @@ void RagDollApp::setMesh(){
     for (size_t i = 0; i < index_count; i += 3)
     {
       // check for a hit against this triangle
-      std::cout<<"triangle "<<i<<": "<<vertices[indices[i]]<<" "<<
-      vertices[indices[i+1]]<<" "<< vertices[indices[i+2]]<<std::endl;
+     // std::cout<<"triangle "<<i<<": "<<vertices[indices[i]]<<" "<<
+     // vertices[indices[i+1]]<<" "<< vertices[indices[i+2]]<<std::endl;
     }
 
 
@@ -418,7 +523,7 @@ keyPressed( const OIS::KeyEvent& arg )
   } 
     planeBlender_node->translate(dx,dy,dz);
     
-  
+  /*
 /////////////////////////////////////Buscando si hay colision/////////////////////////////////////////////////////////////////
   //Ogre::Vector3 posTool = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);
   Ogre::Plane plano;
@@ -465,7 +570,7 @@ keyPressed( const OIS::KeyEvent& arg )
 
   }
 ////////////////////////////////////Fin Buscando colision/////////////////////////////////////////////////////////////////////
-
+*/
   return( true );
 }
 
@@ -698,5 +803,27 @@ void RagDollApp::createColourCube()
   // std::cout <<"Copiado de triangulos finalizado " <<"\n";
  }
 
+
+bool RagDollApp::
+frameRenderingQueued( const Ogre::FrameEvent& evt )
+{
+
+  std::chrono::duration<double> deltaTime; 
+  deltaTime = static_cast<std::chrono::duration<double>>(evt.timeSinceLastFrame);
+    if( this->pujOgre::Application::frameRenderingQueued( evt ) )
+  {
+    //std::cout <<"Loop: " << evt.timeSinceLastFrame <<"\n";
+    UpdatePhysics(deltaTime);
+    //this->m_AnimationState->addTime( evt.timeSinceLastFrame );
+    return( true );
+  }
+  else
+    return( false );
+}
+
+
+void RagDollApp::UpdatePhysics(std::chrono::duration<double> deltaTime) {
+  //std::cout <<"Loop: " << deltaTime.count() <<"\n";
+}
 // eof - $RCSfile$
  

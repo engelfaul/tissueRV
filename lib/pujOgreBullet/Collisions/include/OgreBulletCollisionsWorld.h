@@ -100,6 +100,7 @@ namespace OgreBulletCollisions
 		btSoftBodyRigidBodyCollisionConfiguration	mDefaultCollisionConfiguration;
 
         std::deque<Object *> mObjects;
+        std::deque<Object *> mSoftObjects;
 
         bool mShowDebugShapes;
         bool mShowDebugContactPoints;

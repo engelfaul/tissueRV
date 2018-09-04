@@ -122,7 +122,7 @@ namespace pujOgreBullet
 
     void updatePhysics();
 
-  protected:
+  public:
     OgreBulletDynamics::DynamicsWorld* m_BulletWorld;
   };
 

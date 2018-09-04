@@ -13,6 +13,7 @@
 #include <Bites/OgreCameraMan.h>
 
 #include <OISInputManager.h>
+#include <iostream>
 
 // -------------------------------------------------------------------------
 pujOgre::Application::
@@ -208,9 +209,12 @@ loadResources( )
 }
 
 // -------------------------------------------------------------------------
+
 bool pujOgre::Application::
 frameRenderingQueued( const Ogre::FrameEvent& evt )
 {
+
+
   if( this->m_Window->isClosed( ) )
     return( false );
   if( this->m_ShutDown )

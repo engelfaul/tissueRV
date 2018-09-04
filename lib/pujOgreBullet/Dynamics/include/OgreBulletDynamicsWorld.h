@@ -43,6 +43,8 @@ namespace OgreBulletDynamics
     class DynamicsWorld : public OgreBulletCollisions::CollisionsWorld
     {
     public:
+        
+        btSoftBodyWorldInfo softBodyWorldInfo;
         DynamicsWorld(Ogre::SceneManager *mgr,
                       const Ogre::AxisAlignedBox &bounds,
                       const Ogre::Vector3 &gravity,
