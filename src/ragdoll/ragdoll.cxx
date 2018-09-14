@@ -135,21 +135,21 @@ createScene( )
    ///Prueba generacion manual de un mesh /////comentariado para probar el manualobject
   /*
   createColourCube(); 
-  Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("pielEnity", "ColourCube");
-  thisEntity->setMaterialName("Mat");
-  Ogre::AxisAlignedBox bboxSoft = thisEntity->getBoundingBox( );
-  Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-  thisSceneNode->setPosition(0, 5, 0);
-  thisSceneNode->attachObject(thisEntity);
-  std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
+  Ogre::Entity* thisEntity2 = this->m_SceneMgr->createEntity("pielEnity2", "ColourCube");
+  thisEntity2->setMaterialName("Mat");
+  Ogre::AxisAlignedBox bboxSoft2 = thisEntity2->getBoundingBox( );
+  Ogre::SceneNode* thisSceneNode2 = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+  thisSceneNode2->setPosition(0, 5, 0);
+  thisSceneNode2->attachObject(thisEntity2);
+  //std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
 
 //Agregar el objeto blando al mundo fisico
-  Ogre::Quaternion qsoft( 1, 1, 1, 1 );
-  qsoft.normalise( );
+  Ogre::Quaternion qsoft1( 1, 1, 1, 1 );
+  qsoft1.normalise( );
   this->addSoftPhysicsTrimesh(
-    thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
+    thisEntity2, thisSceneNode2, "soft_physics2", 0.0009, 0.0009, 10,
     Ogre::Vector3( 0, 5, 0 ),
-    qsoft
+    qsoft1
     );
   */
    ///prueba clase tipo suave
@@ -161,32 +161,27 @@ createScene( )
 Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
 man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-    man->position(-20, 20, 20);
+    man->position(0, 5, 5);
     man->normal(0, 0, 1);
-    man->textureCoord(0, 0);
-    man->position(-20, -20, 20);
+    //man->textureCoord(0, 0);
+    man->position(0, 5, 0);
     man->normal(0, 0, 1);
-    man->textureCoord(0, 1);
-    man->position(20, -20, 20);
+    //man->textureCoord(0, 1);
+    man->position(5, 5, -5);
     man->normal(0, 0, 1);
-    man->textureCoord(1, 1);
-    man->position(20, 20, 20);
+    //man->textureCoord(1, 1);
+    man->position(-5, 5, -5);
     man->normal(0, 0, 1);
-    man->textureCoord(1, 0);
+    //man->textureCoord(1, 0);
 // https://forums.ogre3d.org/viewtopic.php?t=32747 revisar
-    man->quad(0, 1, 2, 3);
+    
+    //man->quad(0, 1, 2, 3); el numero de nodos vienen dados por el orden en que se ingresan los vertices al definir los triangulos
+    man->triangle(0,1,2);
+    man->triangle(1,2,3);
+    man->triangle(1,0,3);
     man->end();
     //Ogre::SceneNode* manNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
     //manNode->attachObject(man); 
-
-
-    man->beginUpdate(0);
-    man->position(-5, 5, 5);
-    man->position(-5, -5, 5);
-    man->position(5, -5, 5);
-    man->position(5, 5, 5);
-    man->quad(0, 1, 2, 3);
-    man->end();
 
     Ogre::MeshPtr meshTest = man->convertToMesh("test");
     //Agregar el objeto blando al mundo geometrico y al mundo fisico
@@ -203,16 +198,9 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
       qsoft.normalise( );
       this->addSoftPhysicsTrimesh(
         thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
-        Ogre::Vector3( 0, 5, 0 ),
+        Ogre::Vector3( 0, 15, 0 ),
         qsoft
         );
-    man->beginUpdate(0);
-    man->position(-20, 20, 20);
-    man->position(-20, -20, 20);
-    man->position(20, -20, 20);
-    man->position(20, 20, 20);
-    man->quad(0, 1, 2, 3);
-    man->end();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Lights
@@ -263,6 +251,17 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
       "ship_node"
       );
   ship_node->attachObject( ship );
+/*
+    //Agregar el objeto blando al mundo fisico
+      Ogre::Quaternion qsoft2( 1, 1, 1, 1 );
+      qsoft2.normalise( );
+      this->addSoftPhysicsTrimesh(
+        ship, ship_node, "ship_physics", 0.0009, 0.0009, 10,
+        Ogre::Vector3( 0, 10, 0 ),
+        qsoft2
+        );
+*/
+
 /*
   //////////Objeto piel
     // Load model entity
@@ -467,7 +466,72 @@ void RagDollApp::setMesh(){
 bool pujOgre::Application::
 keyPressed( const OIS::KeyEvent& arg )
 {
+  
+  
   OIS::KeyCode a = arg.key;
+  ///moviendo la camara
+  //this->m_Camera->setPosition( Ogre::Vector3( 25, 25, 25 ) );
+    
+   // if( this->m_Keyboard->isKeyDown( OIS::KC_LSHIFT ) )
+    //  moveScale *= 10;
+    Ogre::Vector3 posCamera = this->m_Camera->getPosition();
+    if( this->m_Keyboard->isKeyDown( OIS::KC_J ) ) {
+        // Move camera left
+      posCamera.x = posCamera.x + 1;
+      this->m_Camera->setPosition( posCamera );
+      }
+
+    if( this->m_Keyboard->isKeyDown( OIS::KC_L ) ){
+      posCamera.x = posCamera.x - 1;
+      this->m_Camera->setPosition( posCamera );  // Move camera right
+    }
+      
+
+    if(this->m_Keyboard->isKeyDown( OIS::KC_I )){
+      posCamera.z = posCamera.z + 0.5;
+      this->m_Camera->setPosition( posCamera );// Move camera forward
+    }
+      
+
+    if(this->m_Keyboard->isKeyDown( OIS::KC_K )){
+      posCamera.z = posCamera.z - 0.5;
+      this->m_Camera->setPosition( posCamera );  // Move camera backward
+    }
+      
+
+    if( this->m_Keyboard->isKeyDown( OIS::KC_Y ) ){
+      posCamera.y = posCamera.y + 0.5;
+      this->m_Camera->setPosition( posCamera );  // Move camera up
+    }
+      
+
+    if( this->m_Keyboard->isKeyDown( OIS::KC_H ) ){
+      posCamera.y = posCamera.y - 0.5;
+      this->m_Camera->setPosition( posCamera ); // Move camera down
+    }
+      
+   Ogre::Degree rotate = Ogre::Degree(1);
+  
+    if( this->m_Keyboard->isKeyDown( OIS::KC_RIGHT ) ){
+      std::cout <<"rotando derecha "<< "\n";
+      this->m_Camera->yaw( -rotate );
+    }
+      
+
+    if( this->m_Keyboard->isKeyDown( OIS::KC_LEFT ) ){
+      std::cout <<"rotando izquierda "<< "\n";
+      this->m_Camera->yaw( rotate );
+    }
+       
+
+    if(
+      this->m_Keyboard->isKeyDown( OIS::KC_ESCAPE ) ||
+      this->m_Keyboard->isKeyDown( OIS::KC_Q )
+      )
+      return( false );
+
+
+  //moviendo el instrumento
   Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
   float dx  = 0;
   float dy  = 0;
@@ -497,6 +561,8 @@ keyPressed( const OIS::KeyEvent& arg )
   } 
     planeBlender_node->translate(dx,dy,dz);
     
+
+
   /*
 /////////////////////////////////////Buscando si hay colision/////////////////////////////////////////////////////////////////
   //Ogre::Vector3 posTool = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);

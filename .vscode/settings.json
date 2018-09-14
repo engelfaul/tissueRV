@@ -50,6 +50,7 @@
         "bitset": "cpp",
         "list": "cpp",
         "unordered_set": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "iomanip": "cpp"
     }
 }

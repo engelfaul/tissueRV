@@ -71,10 +71,10 @@ namespace OgreBulletDynamics
         btAlignedObjectArray<btScalar> trimeshVertices;
         btAlignedObjectArray<int> triangles;
 
+        int tempvertex;
         for ( int part=0;part< trimesh->getNumSubParts(); part++ ) {
             const unsigned char * vertexbase;
-            const unsigned char * indexbase;
-
+            const unsigned char * indexbase;    
             int indexstride;
             int stride, numverts, numtriangles;
             PHY_ScalarType type, gfxindextype;
@@ -103,6 +103,7 @@ namespace OgreBulletDynamics
                 triangles.push_back(tri_indices[1]);
                 triangles.push_back(tri_indices[2]);
             }
+            tempvertex = numverts;
         }
 
         
@@ -116,13 +117,36 @@ namespace OgreBulletDynamics
         std::cout << "- Tipo Broadphase: " << typeid(*(myWorld->getWorldInfo().m_broadphase)).name() << std::endl;
         std::cout << "- Tipo Mundo: " << typeid(*myWorld).name() << std::endl << std::endl;
         std::cout << "- Gravedad: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;
-        
+        std::cout << "- num vertices al crears: " << tempvertex << std::endl;
         btSoftBody *body = btSoftBodyHelpers::CreateFromTriMesh( myWorld->getWorldInfo(),
                                                                 &trimeshVertices[0],
                                                                 &triangles[0],
                                                                 trimesh->getNumTriangles()
                                                                 );
-
+        
+        //Fijar nodo cero 
+        body->setMass(0,0);
+        //body->setMass(1,0);
+        //body->setMass(2,0);
+        //body->setMass(3,0);
+        //body->setMass(4,0);
+        body->setMass(5,0);
+        //body->setMass(6,0);
+        body->setMass(7,0);
+        body->setMass(8,0);
+        btScalar massZero = body->getMass(0);
+        std::cout << "- masa del nodo cero: " << massZero << std::endl;
+        
+        //investigando valores de los nodos
+       int numNodes = body->m_nodes.size();
+       std::deque<Ogre::Vector3> npoints;
+       std::cout << "- numero de nodos: " << numNodes << std::endl;
+        for (size_t i = 0; i < numNodes; i++) {
+            btVector3 pos = body->m_nodes[i].m_x; 
+            npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
+               std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+        }
+       
        // myWorld->getWorldInfo().m_gravity =  btVector3(0,10,0);
        body->m_worldInfo = &(myWorld->getWorldInfo());
        btSoftBody::Material *pm = body->appendMaterial();
@@ -149,7 +173,7 @@ namespace OgreBulletDynamics
         body->m_cfg.piterations = 5;
         body->m_cfg.diterations = 0;
         body->randomizeConstraints();
-        body->setTotalMass(bodyMass, true);
+       // body->setTotalMass(bodyMass, true);
 
         //std::cout << "- Gravedad2: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;                                                        
         mObject = body;
@@ -165,25 +189,25 @@ namespace OgreBulletDynamics
     }
 
     void SoftBody::UpdateMesh(){
+           /*
            std::cout << "\n----- Actualizando objeto fisico!!! ------" << std::endl;
            std::cout << "nombre del nodo:  "<< this->mShapeNode->getName() << "\n" << std::endl;
            std::cout << "nombre de la entidad:  "<< this->mEntity->getName() << "\n" << std::endl;
-           
-           //this->mShapeNode recuperar la malla del scene node? debo recuperar la entidad?
-           //por ahora se sabe apriori el nombre de la entidad del cuerpo blando
-           //pendiente por definir como obtener la entidad a apartir del sceneNode
+           */
            
            
            int numNodes = static_cast<btSoftBody*>(mObject)->m_nodes.size();
            
-           std::cout << "numero de nodos:  "<< numNodes << "\n" << std::endl;
-           //Ogre::Vector3 npoints;
+           //std::cout << "numero de nodos:  "<< numNodes << "\n" << std::endl;
+           
            std::deque<Ogre::Vector3> npoints;
            for (size_t i = 0; i < numNodes; i++) {
                btVector3 pos = static_cast<btSoftBody*>(mObject)->m_nodes[i].m_x; 
                npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
            //    std::cout << "actualizando puntos:  "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
            }
+
+            //std::cout << "tamanio npoints:  "<< npoints.size() << "\n" << std::endl;
 
             Ogre::Matrix4 mTransform = Ogre::Matrix4::IDENTITY;
             //modificar los nodos de este scene node
@@ -208,20 +232,26 @@ namespace OgreBulletDynamics
                     //float *pReal = NULL;
             
 
-                    std::cout << "vertex count: " <<vertexCount <<std::endl;
+                    //std::cout << "vertex count: " <<vertexCount <<std::endl;
                     
                     Ogre::Vector3 * curVertices = &mVertexBuffer[vertexCount];  
-                    for (unsigned int j = 0; j < vertexCount; ++j)
+                    for (unsigned int j = 0; j < vertexCount; j++)
                         {
                                 
                             
                             posElem->baseVertexPointerToElement(pVert , &pReal);
                             pVert += vSize;
                             //pendiente transformar
-                             //npoints = mTransform * (npoints);
-                            (*pReal++) = npoints[j].x;    
-                            (*pReal++) = npoints[j].y;    
-                            (*pReal++) = npoints[j].z;
+                            //npoints[j] = mTransform * (npoints[j]);
+                            if(j==3){
+                                (*(pReal++)) = npoints[5].x;    
+                                (*(pReal++)) = npoints[5].y;    
+                                (*(pReal++)) = npoints[5].z;
+                            }else {
+                                (*(pReal++)) = npoints[j].x;    
+                                (*(pReal++)) = npoints[j].y;    
+                                (*(pReal++)) = npoints[j].z;
+                            }
                             /*
                             curVertices->x = (*pReal++);
                             curVertices->y = (*pReal++);
@@ -237,7 +267,7 @@ namespace OgreBulletDynamics
                }
            }
 
-            std::cout << "FIN DE ACTUALIZACION DE OBJETO SUAVE:  \n" << std::endl;       
+           // std::cout << "FIN DE ACTUALIZACION DE OBJETO SUAVE:  \n" << std::endl;       
 
     }    
 }

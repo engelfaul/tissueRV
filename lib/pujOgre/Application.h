@@ -159,6 +159,7 @@ namespace pujOgre
     OIS::InputManager* m_InputManager;
     OIS::Mouse*    m_Mouse;
     OIS::Keyboard* m_Keyboard;
+    float        m_MoveScale;
 
     // Other attributes
     bool m_ShutDown;
