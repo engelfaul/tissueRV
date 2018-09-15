@@ -124,17 +124,7 @@ namespace OgreBulletDynamics
                                                                 trimesh->getNumTriangles()
                                                                 );
         
-        //Fijar nodo cero 
-        body->setMass(0,0);
-        //body->setMass(1,0);
-        //body->setMass(2,0);
-        //body->setMass(3,0);
-        //body->setMass(4,0);
-        body->setMass(5,0);
-        //body->setMass(6,0);
-        body->setMass(7,0);
-        body->setMass(8,0);
-        btScalar massZero = body->getMass(0);
+               btScalar massZero = body->getMass(0);
         std::cout << "- masa del nodo cero: " << massZero << std::endl;
         
         //investigando valores de los nodos
@@ -173,7 +163,19 @@ namespace OgreBulletDynamics
         body->m_cfg.piterations = 5;
         body->m_cfg.diterations = 0;
         body->randomizeConstraints();
-       // body->setTotalMass(bodyMass, true);
+        body->setTotalMass(bodyMass, true);
+
+        //Fijar nodo cero 
+        body->setMass(0,0);
+        //body->setMass(1,0);
+        //body->setMass(2,0);
+        //body->setMass(3,0);
+        //body->setMass(4,0);
+        body->setMass(5,0);
+        //body->setMass(6,0);
+        //body->setMass(7,0);
+        body->setMass(8,0);
+ 
 
         //std::cout << "- Gravedad2: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;                                                        
         mObject = body;
