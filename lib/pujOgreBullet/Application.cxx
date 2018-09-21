@@ -37,6 +37,7 @@ createScene( )
 bool pujOgreBullet::Application::
 frameStarted( const Ogre::FrameEvent& evt )
 {
+  
   if( this->Superclass::frameStarted( evt ) )
   {
     this->m_BulletWorld->stepSimulation( evt.timeSinceLastFrame );
@@ -211,8 +212,10 @@ addSoftPhysicsTrimesh(
   const Ogre::Quaternion& orientation
   )
 {
+ //quitar
   OgreBulletCollisions::StaticMeshToShapeConverter* conv =
     new OgreBulletCollisions::StaticMeshToShapeConverter( entity );
+  /////
   OgreBulletDynamics::SoftBody* body =
     new OgreBulletDynamics::SoftBody( name, this->m_BulletWorld );
   OgreBulletCollisions::TriangleMeshCollisionShape* collisionShape =
@@ -220,7 +223,7 @@ addSoftPhysicsTrimesh(
   btTriangleMesh* trimesh = collisionShape->getTrimesh();
 
     body->setShape(
-      node, collisionShape, trimesh,
+      entity, node, collisionShape, trimesh,
       bodyRestitution, bodyFriction, bodyMass,
       position, orientation
     );

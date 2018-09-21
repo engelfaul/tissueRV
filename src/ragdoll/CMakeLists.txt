@@ -12,8 +12,9 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/lib/pujOgreBullet/Collisions/include
   ${PROJECT_SOURCE_DIR}/lib/pujOgreBullet/Collisions/include/Shapes
   ${PROJECT_SOURCE_DIR}/lib/pujOgreBullet/Collisions/include/Utils
+  ${PROJECT_SOURCE_DIR}/lib/src/softObject
   )
-add_executable(RagDollApp ragdoll.cxx)
+add_executable(RagDollApp ragdoll.cxx ../softObject/SceneSoftObject.cpp)
 target_link_libraries(RagDollApp pujOgreBullet)
 
 ## eof - $RCSfile$

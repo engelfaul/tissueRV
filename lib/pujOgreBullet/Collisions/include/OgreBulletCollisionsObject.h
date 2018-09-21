@@ -100,6 +100,7 @@ namespace OgreBulletCollisions
 		Ogre::SceneNode *getRootNode() { return mRootNode; }
 
     protected:
+        
         Ogre::SceneNode *mRootNode;
         Ogre::SceneNode *mShapeNode;
         Ogre::SceneNode *mDebugNode;

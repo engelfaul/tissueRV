@@ -74,12 +74,36 @@ namespace OgreBulletDynamics
             std::cout << "- Tipo Collision Config: " << typeid(mDefaultCollisionConfiguration).name() << std::endl;
             std::cout << "- Tipo Broadphase: " << typeid(mBroadphase).name() << std::endl;
             
-            btSoftBodySolver* solver = new btDefaultSoftBodySolver( );
-            mWorld = new btSoftRigidDynamicsWorld( mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration, solver );
+            // Algoritmo de emparejamiento de colisionadores (Broadphase).
+            // En este caso un Dynamic AABBTree.
+            mBroadphase = new btDbvtBroadphase();
+
+            // Configuración de detección de colisiones entre dos pares y el despachador.
+            btDefaultCollisionConfiguration *collisionConfiguration =
+            new btSoftBodyRigidBodyCollisionConfiguration();
+
+            // Soporta colisiones convex-convex y convex-concave.
+            btCollisionDispatcher *dispatcher =
+            new btCollisionDispatcher(collisionConfiguration);
+
+            btSoftBodySolver* solver1 = new btDefaultSoftBodySolver( );
+            // Solucionador del estado siguiente de la simulación a partir de la lógica de
+            // simulación. Es un punto importante para el rendimiento de la simulación.
+            // Este solucionador implementa PGS para LCP.
+            btSequentialImpulseConstraintSolver* solver =
+                new btSequentialImpulseConstraintSolver();
+
+            mWorld = new btSoftRigidDynamicsWorld( dispatcher, mBroadphase, mConstraintsolver, collisionConfiguration, solver1 );
             //(DynamicsWorld*)mWorld->getDynamicsWorld()->getBulletDynamicsWorld()->setGravity(btVector3(0, -10, 0));
             
             std::cout << "- Tipo Mundo: " << typeid(mWorld).name() << std::endl << std::endl;
             static_cast<btSoftRigidDynamicsWorld *>(mWorld)->setGravity(convert(gravity));
+
+            // Configuración para la simulación de cuerpos suaves.
+            this->softBodyWorldInfo.m_broadphase = mBroadphase;
+            this->softBodyWorldInfo.m_dispatcher = dispatcher;
+            this->softBodyWorldInfo.m_gravity = static_cast<btSoftRigidDynamicsWorld *>(mWorld)->getGravity();
+            this->softBodyWorldInfo.m_sparsesdf.Initialize();
 		}
 
     }
@@ -109,8 +133,9 @@ namespace OgreBulletDynamics
     // -------------------------------------------------------------------------
     void DynamicsWorld::addSoftBody(SoftBody *sb, short collisionGroup, short collisionMask)
     {
+        //ojo statico
         mObjects.push_back(static_cast <Object *>(sb));
-
+        mSoftObjects.push_back(static_cast <Object *>(sb));
 		if (collisionGroup == 0 && collisionMask == 0)
 		{
 			// use default collision group/mask values (dynamic/kinematic/static)
@@ -135,7 +160,7 @@ namespace OgreBulletDynamics
         {
             mDebugContactPoints->clear();
         }
-
+        
         static_cast<btSoftRigidDynamicsWorld *> (mWorld)->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
 
 		if (mDebugContactPoints) 
@@ -197,7 +222,18 @@ namespace OgreBulletDynamics
 				}
 			}
             */
-		}
+		}   
+
+        //std::cout <<"loop num softbodies: "<< static_cast<btSoftRigidDynamicsWorld *> (mWorld)->getSoftBodyArray().size() <<"\n";
+        std::cout <<"loop num softbodies: "<< mSoftObjects.size() <<"\n";
+        
+        int numSoft = static_cast<btSoftRigidDynamicsWorld *> (mWorld)->getSoftBodyArray().size();
+          // Llamar actualización de física de cada objeto suave.
+        for (size_t i = 0; i < numSoft; i++) {
+          static_cast<SoftBody*>(mSoftObjects[i])->UpdateMesh();  
+            //this->softObjects[i]->UpdateMesh();
+        }
+        
     }
     // -------------------------------------------------------------------------
     void DynamicsWorld::removeConstraint(TypedConstraint *constraint)

@@ -20,7 +20,7 @@ namespace OgreBulletDynamics {
             
             virtual ~SoftBody();
 
-            void setShape(Ogre::SceneNode *node,
+            void setShape(Ogre::Entity *ent,Ogre::SceneNode *node,
                       OgreBulletCollisions::CollisionShape *shape,
                       btTriangleMesh* trimesh,
                       const float bodyRestitution,
@@ -28,12 +28,16 @@ namespace OgreBulletDynamics {
                       const float bodyMass,
                       const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
                       const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
+            
+            void UpdateMesh();          
 
             inline btSoftBody *getBulletSoftBody() const;
             inline DynamicsWorld *getDynamicsWorld();
             inline btDynamicsWorld *getBulletDynamicsWorld() const;
 
         protected:
+            Ogre::Entity * mEntity;
+            int * indexBulletNodes;
             short mCollisionGroup;
             short mCollisionMask;
     };
