@@ -131,12 +131,73 @@ namespace OgreBulletDynamics
        int numNodes = body->m_nodes.size();
        std::deque<Ogre::Vector3> npoints;
        std::cout << "- numero de nodos: " << numNodes << std::endl;
+
+        
         for (size_t i = 0; i < numNodes; i++) {
             btVector3 pos = body->m_nodes[i].m_x; 
             npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
                std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               
         }
        
+///////////////////////////////verificando los VertexBuffer///////////////////////////////////////////////////////////
+           for (unsigned int i = 0; i < this->mEntity->getNumSubEntities(); ++i){
+               Ogre::SubMesh *sub_mesh = this->mEntity->getSubEntity(i)->getSubMesh();
+                
+               if (!sub_mesh->useSharedVertices ){ 
+                
+                    Ogre::VertexData *data = sub_mesh->vertexData;
+                    const Ogre::VertexElement *posElem = data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION); 
+                    Ogre::HardwareVertexBufferSharedPtr vbuf = data->vertexBufferBinding->getBuffer(posElem->getSource());
+                    VertexDeclaration* decl = HardwareBufferManager::getSingleton().createVertexDeclaration();
+                    
+                    const unsigned int vSize = (unsigned int)vbuf->getVertexSize();
+                    const unsigned int vertexCount = (unsigned int)data->vertexCount;
+                    Ogre::Vector3 *tmp_vert = new Ogre::Vector3[vertexCount];
+                    Ogre::Vector3 *mVertexBuffer;    
+                        mVertexBuffer = tmp_vert;
+                    
+
+                    unsigned char *pVert = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+                    Real* pReal;
+
+                    std::cout << "vertex count: " <<vertexCount <<std::endl;
+                    
+                    indexBulletNodes = new int[vertexCount];
+                    Ogre::Vector3 * curVertices = &mVertexBuffer[vertexCount];  
+                    for (unsigned int j = 0; j < vertexCount; j++)
+                        {
+                            
+                            posElem->baseVertexPointerToElement(pVert , &pReal);
+                            pVert += vSize;
+                            //el primer buffer es Z!
+                            int vx =(*(pReal++));
+                            int vy =(*(pReal++));
+                            int vz =(*(pReal++));
+                            std::cout << "vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
+                            
+                            for (size_t i = 0; i < numNodes; i++) {
+                                btVector3 pos = body->m_nodes[i].m_x; 
+                                std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+                                if(vx == pos[0] && vy == pos[1] && vz == pos[2] ){
+                                   //si encuentra un nodo igual al vertice sale del for
+                                   indexBulletNodes[j] = i;        
+                                   std::cout << "nodo "<< i <<" vertice "<< j << "\n" << std::endl;
+                                   break;         
+                                }
+                            }
+                
+                        }
+                    
+                    
+                    vbuf->unlock();      
+               }
+           }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
        // myWorld->getWorldInfo().m_gravity =  btVector3(0,10,0);
        body->m_worldInfo = &(myWorld->getWorldInfo());
        btSoftBody::Material *pm = body->appendMaterial();
@@ -163,20 +224,26 @@ namespace OgreBulletDynamics
         body->m_cfg.piterations = 5;
         body->m_cfg.diterations = 0;
         body->randomizeConstraints();
-        body->setTotalMass(bodyMass, true);
-
+        //body->setTotalMass(bodyMass, true);
+        //body->setTotalMass(0, true);
+        
         //Fijar nodo cero 
         body->setMass(0,0);
         //body->setMass(1,0);
         //body->setMass(2,0);
         //body->setMass(3,0);
-        //body->setMass(4,0);
+        body->setMass(4,0);
         body->setMass(5,0);
-        //body->setMass(6,0);
+        body->setMass(6,0);
         //body->setMass(7,0);
-        body->setMass(8,0);
- 
-
+        //body->setMass(8,0);
+        body->setMass(10,0);
+        body->setMass(11,0);
+        body->setMass(12,0);
+       // body->setMass(13,0);
+       body->setMass(16,0);
+        body->setMass(17,0);
+        //body->setMass(18,0);
         //std::cout << "- Gravedad2: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;                                                        
         mObject = body;
 	    body->getCollisionShape()->setMargin( 0.1f );
@@ -195,9 +262,7 @@ namespace OgreBulletDynamics
            std::cout << "\n----- Actualizando objeto fisico!!! ------" << std::endl;
            std::cout << "nombre del nodo:  "<< this->mShapeNode->getName() << "\n" << std::endl;
            std::cout << "nombre de la entidad:  "<< this->mEntity->getName() << "\n" << std::endl;
-           */
-           
-           
+           */       
            int numNodes = static_cast<btSoftBody*>(mObject)->m_nodes.size();
            
            //std::cout << "numero de nodos:  "<< numNodes << "\n" << std::endl;
@@ -206,7 +271,7 @@ namespace OgreBulletDynamics
            for (size_t i = 0; i < numNodes; i++) {
                btVector3 pos = static_cast<btSoftBody*>(mObject)->m_nodes[i].m_x; 
                npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
-           //    std::cout << "actualizando puntos:  "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               //std::cout << "actualizando puntos:  "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
            }
 
             //std::cout << "tamanio npoints:  "<< npoints.size() << "\n" << std::endl;
@@ -216,7 +281,10 @@ namespace OgreBulletDynamics
            //this->mShapeNode o this->mEntity
            for (unsigned int i = 0; i < this->mEntity->getNumSubEntities(); ++i){
                Ogre::SubMesh *sub_mesh = this->mEntity->getSubEntity(i)->getSubMesh();
-               if (!sub_mesh->useSharedVertices){
+                
+              //  std::cout << "Antes del if " <<std::endl;
+               if (!sub_mesh->useSharedVertices ){ 
+               //    std::cout << "Adentro del if " <<std::endl;
                     Ogre::VertexData *data = sub_mesh->vertexData;
                     const Ogre::VertexElement *posElem = data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION); 
                     Ogre::HardwareVertexBufferSharedPtr vbuf = data->vertexBufferBinding->getBuffer(posElem->getSource());
@@ -234,7 +302,7 @@ namespace OgreBulletDynamics
                     //float *pReal = NULL;
             
 
-                    //std::cout << "vertex count: " <<vertexCount <<std::endl;
+                    //    std::cout << "vertex count: " <<vertexCount <<std::endl;
                     
                     Ogre::Vector3 * curVertices = &mVertexBuffer[vertexCount];  
                     for (unsigned int j = 0; j < vertexCount; j++)
@@ -245,6 +313,9 @@ namespace OgreBulletDynamics
                             pVert += vSize;
                             //pendiente transformar
                             //npoints[j] = mTransform * (npoints[j]);
+                            //pendiente definir la trnasformacion de nodos a vertices
+
+                            /*
                             if(j==3){
                                 (*(pReal++)) = npoints[5].x;    
                                 (*(pReal++)) = npoints[5].y;    
@@ -253,7 +324,11 @@ namespace OgreBulletDynamics
                                 (*(pReal++)) = npoints[j].x;    
                                 (*(pReal++)) = npoints[j].y;    
                                 (*(pReal++)) = npoints[j].z;
-                            }
+                            }*/
+                            
+                                (*(pReal++)) = npoints[indexBulletNodes[j]].x;    
+                                (*(pReal++)) = npoints[indexBulletNodes[j]].y;    
+                                (*(pReal++)) = npoints[indexBulletNodes[j]].z;
                             /*
                             curVertices->x = (*pReal++);
                             curVertices->y = (*pReal++);

@@ -151,7 +151,7 @@ createScene( )
     Ogre::Vector3( 0, 5, 0 ),
     qsoft1
     );
-  */
+ */
    ///prueba clase tipo suave
    //std::shared_ptr<SceneSoftObject> softObject(new SceneSoftObject(thisEntity));
   //SceneSoftObject* so = new SceneSoftObject(thisEntity);
@@ -161,24 +161,93 @@ createScene( )
 Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
 man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-    man->position(0, 5, 5);
-    man->normal(0, 0, 1);
+    man->position(0, 0, 0);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
     //man->textureCoord(0, 0);
-    man->position(0, 5, 0);
-    man->normal(0, 0, 1);
+    man->position(3, 0, 0);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
     //man->textureCoord(0, 1);
-    man->position(5, 5, -5);
-    man->normal(0, 0, 1);
+    man->position(6, 0, 0);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
     //man->textureCoord(1, 1);
-    man->position(-5, 5, -5);
-    man->normal(0, 0, 1);
+    man->position(9, 0, 0);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
     //man->textureCoord(1, 0);
+    
+    man->position(0, 0, -3);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    ////man->textureCoord(0, 0);
+    man->position(3, 0, -3);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(0, 1);
+    man->position(6, 0, -3);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(1, 1);
+    man->position(9, 0, -3);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(1, 0);
+
+    man->position(0, 0, -6);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(0, 0);
+    man->position(3, 0, -6);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(0, 1);
+    man->position(6, 0, -6);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(1, 1);
+    man->position(9, 0, -6);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(1, 0);
+
+
+    man->position(0, 0, -9);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(0, 0);
+    man->position(3, 0, -9);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(0, 1);
+    man->position(6, 0, -9);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(1, 1);
+    man->position(9, 0, -9);
+    man->normal(-sqrt13, sqrt13, -sqrt13);
+    //man->textureCoord(1, 0);
+
+
 // https://forums.ogre3d.org/viewtopic.php?t=32747 revisar
     
     //man->quad(0, 1, 2, 3); el numero de nodos vienen dados por el orden en que se ingresan los vertices al definir los triangulos
-    man->triangle(0,1,2);
-    man->triangle(1,2,3);
-    man->triangle(1,0,3);
+    man->triangle(0,4,5);
+    man->triangle(5,1,0);
+    
+    man->triangle(1,5,6);
+    man->triangle(6,2,1);
+
+    man->triangle(2,6,7);
+    man->triangle(7,3,2);
+
+
+    man->triangle(4,8,9);
+    man->triangle(9,5,4);
+
+    man->triangle(5,9,10);
+    man->triangle(10,6,5);
+
+    man->triangle(6,10,11);
+    man->triangle(11,7,6);
+
+    man->triangle(8,12,13);
+    man->triangle(13,9,8);
+
+    man->triangle(9,13,14);
+    man->triangle(14,10,9);
+
+    man->triangle(10,14,15);
+    man->triangle(15,11,10);
+
+
+
     man->end();
     //Ogre::SceneNode* manNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
     //manNode->attachObject(man); 
@@ -262,7 +331,8 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
         );
 */
 
-/*
+
+  /* el objeto cargado de blender no se deja actualizar por el objeto de bullet debido a que viene por defecto con el parametro de sharevertex en true y debe ser false
   //////////Objeto piel
     // Load model entity
   Ogre::Entity* tissue =
@@ -279,9 +349,22 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
       );
   tissue_node->attachObject( tissue );
   tissue_node->translate(0,1,0);
-  setMesh();
+  setMesh();   
+
+    //Agregar el objeto blando al mundo fisico
+      Ogre::Quaternion qsoft2( 1, 1, 1, 1 );
+      qsoft2.normalise( );
+      this->addSoftPhysicsTrimesh(
+        tissue, tissue_node, "tiss_physics", 0.0009, 0.0009, 10,
+        Ogre::Vector3( 0, 10, 0 ),
+        qsoft2
+        );
 */
+
+
 //Se puede transformar el objeto piel en ogre o en blender (para blender recordar aplicar con ctrl + A)
+
+
 
   ////////////////////////////Objeto herramienta/////////////////////////////////////
     // Load model entity
