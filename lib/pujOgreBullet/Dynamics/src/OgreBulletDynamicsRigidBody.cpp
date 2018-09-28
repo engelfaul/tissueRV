@@ -85,6 +85,7 @@ namespace OgreBulletDynamics
         btRigidBody *body = new btRigidBody(bodyMass, mState, mShape->getBulletShape(), localInertiaTensor);
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
+    
 
         mObject = body;
 

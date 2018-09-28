@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 
 #include "OgreBulletDynamics.h"
 
@@ -40,6 +41,7 @@ namespace OgreBulletDynamics
                       const Ogre::Vector3 &pos,
                       const Ogre::Quaternion &quat)
     {
+        int vertexc;
         mState = new ObjectState(this);
         mEntity = ent;
         mRootNode = node;
@@ -162,7 +164,7 @@ namespace OgreBulletDynamics
                     Real* pReal;
 
                     std::cout << "vertex count: " <<vertexCount <<std::endl;
-                    
+                    vertexc = vertexCount;
                     indexBulletNodes = new int[vertexCount];
                     Ogre::Vector3 * curVertices = &mVertexBuffer[vertexCount];  
                     for (unsigned int j = 0; j < vertexCount; j++)
@@ -174,15 +176,15 @@ namespace OgreBulletDynamics
                             int vx =(*(pReal++));
                             int vy =(*(pReal++));
                             int vz =(*(pReal++));
-                            std::cout << "vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
+                            //std::cout << "vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
                             
                             for (size_t i = 0; i < numNodes; i++) {
                                 btVector3 pos = body->m_nodes[i].m_x; 
-                                std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+                              //  std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
                                 if(vx == pos[0] && vy == pos[1] && vz == pos[2] ){
                                    //si encuentra un nodo igual al vertice sale del for
                                    indexBulletNodes[j] = i;        
-                                   std::cout << "nodo "<< i <<" vertice "<< j << "\n" << std::endl;
+                                //   std::cout << "nodo "<< i <<" vertice "<< j << "\n" << std::endl;
                                    break;         
                                 }
                             }
@@ -201,13 +203,13 @@ namespace OgreBulletDynamics
        // myWorld->getWorldInfo().m_gravity =  btVector3(0,10,0);
        body->m_worldInfo = &(myWorld->getWorldInfo());
        btSoftBody::Material *pm = body->appendMaterial();
-       pm->m_kLST = 0.1;
+       pm->m_kLST = 1;
         pm->m_kAST = 0.1;
         pm->m_kVST = 0.1;
         body->generateBendingConstraints(2, pm);
         body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         body->m_cfg.kVCF = 1;
-        body->m_cfg.kDP = 0;
+        body->m_cfg.kDP = 0.005f;
         body->m_cfg.kDG = 0;
         body->m_cfg.kLF = 0;
         body->m_cfg.kPR = 0;
@@ -227,7 +229,17 @@ namespace OgreBulletDynamics
         //body->setTotalMass(bodyMass, true);
         //body->setTotalMass(0, true);
         
-        //Fijar nodo cero 
+        //Fijar el objeto configurando vertices con masa igual a cero
+        int res =  sqrt(vertexc);
+        int cont = 0;
+        for(int n=0;n<res-1;n++){
+          body->setMass(cont,0);
+          body->setMass(cont+4,0);
+          body->setMass(cont+5,0);
+          cont+=6;      
+        }
+       
+        /*
         body->setMass(0,0);
         //body->setMass(1,0);
         //body->setMass(2,0);
@@ -243,10 +255,15 @@ namespace OgreBulletDynamics
        // body->setMass(13,0);
        body->setMass(16,0);
         body->setMass(17,0);
+
+        */
+        body->getCollisionShape()->setMargin( 0.1f );
+
+        std::cout << "RestLengh: " << body->getRestLengthScale() << std::endl;
         //body->setMass(18,0);
         //std::cout << "- Gravedad2: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;                                                        
         mObject = body;
-	    body->getCollisionShape()->setMargin( 0.1f );
+	    
         //body->setTotalMass( bodyMass );
 	    //cloth->generateBendingConstraints(2,cloth->appendMaterial());
 	    
