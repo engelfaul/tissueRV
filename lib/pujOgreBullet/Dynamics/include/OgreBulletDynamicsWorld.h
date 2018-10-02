@@ -43,7 +43,7 @@ namespace OgreBulletDynamics
     class DynamicsWorld : public OgreBulletCollisions::CollisionsWorld
     {
     public:
-        
+        Ogre::Real stepTime=0;
         btSoftBodyWorldInfo softBodyWorldInfo;
         DynamicsWorld(Ogre::SceneManager *mgr,
                       const Ogre::AxisAlignedBox &bounds,

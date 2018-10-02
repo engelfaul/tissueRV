@@ -29,7 +29,11 @@ namespace OgreBulletDynamics {
                       const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
                       const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
             
+            //actualizando el mesh en cada delta t
             void UpdateMesh();          
+
+            //evento de corte
+            void UpdateCut(Ogre::Real cutnode);
 
             inline btSoftBody *getBulletSoftBody() const;
             inline DynamicsWorld *getDynamicsWorld();

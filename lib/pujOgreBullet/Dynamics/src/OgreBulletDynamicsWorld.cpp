@@ -153,10 +153,19 @@ namespace OgreBulletDynamics
          //std::cout <<"loop num softbodies: "<< static_cast<btSoftRigidDynamicsWorld *> (mWorld)->getSoftBodyArray().size() <<"\n";
         //std::cout <<"loop num softbodies: "<< mSoftObjects.size() <<"\n";
         
+        //actualizando el mesh
+       // stepTime=stepTime+elapsedTime;
+       stepTime=stepTime+1;
+        std::cout <<"time test: "<< stepTime <<"\n";
         int numSoft = static_cast<btSoftRigidDynamicsWorld *> (mWorld)->getSoftBodyArray().size();
           // Llamar actualización de física de cada objeto suave.
         //this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
         for (size_t i = 0; i < numSoft; i++) {
+
+          if(stepTime == 20 ){
+            static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime);    
+          }      
+
           static_cast<SoftBody*>(mSoftObjects[i])->UpdateMesh();
                   
         }

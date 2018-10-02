@@ -48,7 +48,7 @@ namespace OgreBulletDynamics
         mShapeNode = mRootNode->createChildSceneNode(mName + "Node");
         mShapeNode->attachObject(this);
 
-        node->setPosition(pos);
+        //node->setPosition(pos);
         //node->setOrientation(quat);
 
         mShape = shape;
@@ -210,15 +210,6 @@ namespace OgreBulletDynamics
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// _softBody->m_cfg.kMT = 0.01; // Pose matching coefficient
-// _softBody->m_cfg.kPR = 2500;
-// _softBody->m_cfg.kCHR = 1; // Rigid contacts hardness
-// _softBody->m_cfg.kKHR = 0.8; // Kinetic contacts hardness
-// _softBody->m_cfg.kSHR = 1; // Soft contacts hardness
-
-//_softBody->m_materials[0]->m_kLST = 0.45;
-
-
 // _softBody->setPose(false, true); // XXX Set current state as a pose
 // _softBody->generateBendingConstraints(2, softBodyMaterial);
 
@@ -232,7 +223,7 @@ namespace OgreBulletDynamics
         body->generateBendingConstraints(2, pm);
         body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         body->m_cfg.kVCF = 1;
-        body->m_cfg.kDP = 0.001; // Damping coefficient [0,1]
+        body->m_cfg.kDP = 0.0001; // Damping coefficient [0,1]
         body->m_cfg.kDG = 1;
         body->m_cfg.kLF = 0;
         body->m_cfg.kPR = 0;
@@ -351,8 +342,8 @@ namespace OgreBulletDynamics
                                 (*(pReal++)) = npoints[indexBulletNodes[j]].y;    
                                 (*(pReal++)) = npoints[indexBulletNodes[j]].z;
 
-                                if(j==12){
-                                    std::cout << "vertex de prueba: " << npoints[indexBulletNodes[j]].x << " " << npoints[indexBulletNodes[j]].y  << " " <<npoints[indexBulletNodes[j]].z <<std::endl;
+                                if(j==99){
+                                    //std::cout << "vertex de prueba: " << npoints[indexBulletNodes[j]].x << " " << npoints[indexBulletNodes[j]].y  << " " <<npoints[indexBulletNodes[j]].z <<std::endl;
                                 }
                         }
                     
@@ -361,7 +352,12 @@ namespace OgreBulletDynamics
                }
            }
 
+
            // std::cout << "FIN DE ACTUALIZACION DE OBJETO SUAVE:  \n" << std::endl;       
 
+    }
+
+    void SoftBody::UpdateCut(Ogre::Real cutnode){
+           std::cout << "CORTANDO!!!!!!" << std::endl;  
     }    
 }

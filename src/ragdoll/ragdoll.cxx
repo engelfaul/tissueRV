@@ -192,7 +192,7 @@ for(int n=0; n<numeroVertices;n++){
       //thisEntity->setMaterialName("Mat");
       Ogre::AxisAlignedBox bboxSoft = thisEntity->getBoundingBox( );
       Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-      thisSceneNode->setPosition(0, 5, 0);
+      //thisSceneNode->setPosition(0, 5, 0);
       thisSceneNode->attachObject(thisEntity);
       std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
 
@@ -201,7 +201,7 @@ for(int n=0; n<numeroVertices;n++){
       qsoft.normalise( );
       this->addSoftPhysicsTrimesh(
         thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
-        Ogre::Vector3( 0, 10, 0 ),
+        Ogre::Vector3( 0, 0, 0 ),
         qsoft
         );
 
