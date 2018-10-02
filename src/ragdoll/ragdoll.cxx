@@ -165,7 +165,7 @@ int numeroVertices = 10;
 for(int n=0; n<numeroVertices;n++){
      for(int m=0; m<numeroVertices;m++){
        std::cout << "vertice:  "<< m << " "<< n << "\n" << std::endl;
-        man->position(m, 0, n);
+        man->position(m, 10, n);
         man->normal(0, 1, 0);
      } 
   }
@@ -201,7 +201,7 @@ for(int n=0; n<numeroVertices;n++){
       qsoft.normalise( );
       this->addSoftPhysicsTrimesh(
         thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
-        Ogre::Vector3( 0, 15, 0 ),
+        Ogre::Vector3( 0, 10, 0 ),
         qsoft
         );
 
@@ -238,7 +238,7 @@ for(int n=0; n<numeroVertices;n++){
       "ninja_node"
       );
   ninja_node->attachObject( ninja );
-  ninja_node->translate(0,10,0);
+  ninja_node->translate(5,10,5);
   //////////Objeto de prueba
     // Load model entity
   Ogre::Entity* ship =
@@ -254,17 +254,6 @@ for(int n=0; n<numeroVertices;n++){
       "ship_node"
       );
   ship_node->attachObject( ship );
-/*
-    //Agregar el objeto blando al mundo fisico
-      Ogre::Quaternion qsoft2( 1, 1, 1, 1 );
-      qsoft2.normalise( );
-      this->addSoftPhysicsTrimesh(
-        ship, ship_node, "ship_physics", 0.0009, 0.0009, 10,
-        Ogre::Vector3( 0, 10, 0 ),
-        qsoft2
-        );
-*/
-
 
   /* el objeto cargado de blender no se deja actualizar por el objeto de bullet debido a que viene por defecto con el parametro de sharevertex en true y debe ser false
   //////////Objeto piel
@@ -297,8 +286,6 @@ for(int n=0; n<numeroVertices;n++){
 
 
 //Se puede transformar el objeto piel en ogre o en blender (para blender recordar aplicar con ctrl + A)
-
-
 
   ////////////////////////////Objeto herramienta/////////////////////////////////////
     // Load model entity
@@ -334,7 +321,7 @@ for(int n=0; n<numeroVertices;n++){
   q.normalise( );
   this->addPhysicsConvex(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( -10, 20, -10 ),
+    Ogre::Vector3( 5, 20, 5 ),
     q
     );
 
