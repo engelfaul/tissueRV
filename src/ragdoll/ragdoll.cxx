@@ -161,92 +161,26 @@ createScene( )
 Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
 man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-    man->position(0, 0, 0);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 0);
-    man->position(3, 0, 0);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 1);
-    man->position(6, 0, 0);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 1);
-    man->position(9, 0, 0);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 0);
-    
-    man->position(0, 0, -3);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    ////man->textureCoord(0, 0);
-    man->position(3, 0, -3);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 1);
-    man->position(6, 0, -3);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 1);
-    man->position(9, 0, -3);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 0);
-
-    man->position(0, 0, -6);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 0);
-    man->position(3, 0, -6);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 1);
-    man->position(6, 0, -6);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 1);
-    man->position(9, 0, -6);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 0);
-
-
-    man->position(0, 0, -9);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 0);
-    man->position(3, 0, -9);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(0, 1);
-    man->position(6, 0, -9);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 1);
-    man->position(9, 0, -9);
-    man->normal(-sqrt13, sqrt13, -sqrt13);
-    //man->textureCoord(1, 0);
+int numeroVertices = 10;
+for(int n=0; n<numeroVertices;n++){
+     for(int m=0; m<numeroVertices;m++){
+       std::cout << "vertice:  "<< m << " "<< n << "\n" << std::endl;
+        man->position(m, 10, n);
+        man->normal(0, 1, 0);
+     } 
+  }
 
 
 // https://forums.ogre3d.org/viewtopic.php?t=32747 revisar
     
-    //man->quad(0, 1, 2, 3); el numero de nodos vienen dados por el orden en que se ingresan los vertices al definir los triangulos
-    man->triangle(0,4,5);
-    man->triangle(5,1,0);
-    
-    man->triangle(1,5,6);
-    man->triangle(6,2,1);
+    int totalVertices = numeroVertices * numeroVertices;
 
-    man->triangle(2,6,7);
-    man->triangle(7,3,2);
-
-
-    man->triangle(4,8,9);
-    man->triangle(9,5,4);
-
-    man->triangle(5,9,10);
-    man->triangle(10,6,5);
-
-    man->triangle(6,10,11);
-    man->triangle(11,7,6);
-
-    man->triangle(8,12,13);
-    man->triangle(13,9,8);
-
-    man->triangle(9,13,14);
-    man->triangle(14,10,9);
-
-    man->triangle(10,14,15);
-    man->triangle(15,11,10);
-
-
+    for(int o=0;o<(totalVertices-numeroVertices);o+=numeroVertices){
+      for(int p=0;p<numeroVertices-1;p++){
+        man->triangle(o+p,o+numeroVertices+p,o+numeroVertices+p+1);
+        man->triangle(o+numeroVertices+p+1,o+1+p,o+p);   
+      }
+    }
 
     man->end();
     //Ogre::SceneNode* manNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -267,7 +201,7 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
       qsoft.normalise( );
       this->addSoftPhysicsTrimesh(
         thisEntity, thisSceneNode, "soft_physics", 0.0009, 0.0009, 10,
-        Ogre::Vector3( 0, 15, 0 ),
+        Ogre::Vector3( 0, 10, 0 ),
         qsoft
         );
 
@@ -304,7 +238,7 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
       "ninja_node"
       );
   ninja_node->attachObject( ninja );
-  ninja_node->translate(0,10,0);
+  ninja_node->translate(5,10,5);
   //////////Objeto de prueba
     // Load model entity
   Ogre::Entity* ship =
@@ -320,17 +254,6 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
       "ship_node"
       );
   ship_node->attachObject( ship );
-/*
-    //Agregar el objeto blando al mundo fisico
-      Ogre::Quaternion qsoft2( 1, 1, 1, 1 );
-      qsoft2.normalise( );
-      this->addSoftPhysicsTrimesh(
-        ship, ship_node, "ship_physics", 0.0009, 0.0009, 10,
-        Ogre::Vector3( 0, 10, 0 ),
-        qsoft2
-        );
-*/
-
 
   /* el objeto cargado de blender no se deja actualizar por el objeto de bullet debido a que viene por defecto con el parametro de sharevertex en true y debe ser false
   //////////Objeto piel
@@ -364,8 +287,6 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 //Se puede transformar el objeto piel en ogre o en blender (para blender recordar aplicar con ctrl + A)
 
-
-
   ////////////////////////////Objeto herramienta/////////////////////////////////////
     // Load model entity
   Ogre::Entity* tool =
@@ -386,6 +307,13 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
   posTool   = Ogre::Vector3(0,15,0); 
   direccion = Ogre::Vector3(0,14,0);
 
+// Associate tool to the physical world
+  Ogre::Quaternion qTool( 1, 1, 2, 3 );
+  qTool.normalise( );
+  //this->addPhysicsPlane(
+  //  tool,  "tool_physics", 0.000001, 0.00001);
+
+//  this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 /////////////////////////////////////////////////////////////////////////////////////
 
   // Associate ninja to the physical world
@@ -393,7 +321,7 @@ man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
   q.normalise( );
   this->addPhysicsConvex(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( -10, 20, -10 ),
+    Ogre::Vector3( 5, 20, 5 ),
     q
     );
 
