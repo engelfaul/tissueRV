@@ -138,7 +138,7 @@ namespace OgreBulletDynamics
 		                                            btVector3(0,10,9),
 		                                            btVector3(9,10,9),
 		                                            NUM_X,NUM_Z, 
-		                                            1+2,true);
+		                                            1+2+4+8,true);
         
         //investigando valores de los nodos
        int numNodes = body->m_nodes.size();
@@ -187,7 +187,7 @@ namespace OgreBulletDynamics
                             int vx =(*(pReal++));
                             int vy =(*(pReal++));
                             int vz =(*(pReal++));
-                            std::cout << "bucando vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
+                            //std::cout << "bucando vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
                             
                             for (size_t i = 0; i < numNodes; i++) {
                                 btVector3 pos = body->m_nodes[i].m_x; 
@@ -195,7 +195,7 @@ namespace OgreBulletDynamics
                                 if(vx == pos[0] && vy == pos[1] && vz == pos[2] ){
                                    //si encuentra un nodo igual al vertice sale del for
                                    indexBulletNodes[j] = i;        
-                                   std::cout << "encontre nodo "<< i <<" vertice "<< j << "\n" << std::endl;
+                                  // std::cout << "encontre nodo "<< i <<" vertice "<< j << "\n" << std::endl;
                                    break;         
                                 }
                             }
@@ -206,12 +206,7 @@ namespace OgreBulletDynamics
                     vbuf->unlock();      
                }
            }
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// _softBody->setPose(false, true); // XXX Set current state as a pose
-// _softBody->generateBendingConstraints(2, softBodyMaterial);
 
        // myWorld->getWorldInfo().m_gravity =  btVector3(0,10,0);
        body->m_worldInfo = &(myWorld->getWorldInfo());
@@ -247,6 +242,7 @@ namespace OgreBulletDynamics
         //body->setTotalMass(0, true);
         
         //Fijar el objeto configurando vertices con masa igual a cero
+        /*
         int res =  sqrt(vertexc);
         int cont = 0;
         for(int n=0;n<res-1;n++){
@@ -255,25 +251,35 @@ namespace OgreBulletDynamics
           body->setMass(cont+5,0);
           cont+=6;      
         }
-      
+      */
         
         body->getCollisionShape()->setMargin(0.001f);
         body->getCollisionShape()->setUserPointer((void*)body);
 	    body->generateBendingConstraints(2,body->appendMaterial());
-	    //body->setTotalMass(10); 
-	    //cloth->m_cfg.citerations = 10;
-        //	cloth->m_cfg.diterations = 10;
-	    //body->m_cfg.kDP = 0.01;
-	
-
+	    
         std::cout << "RestLengh: " << body->getRestLengthScale() << std::endl;
-        //body->setMass(18,0);
-        //std::cout << "- Gravedad2: " << *(myWorld->getWorldInfo().m_gravity) << std::endl;                                                        
+        
+        ////////////Investigando informacion de los faces/////////////////////////////////////
+        int numFaces = body->m_faces.size();
+        int numLinks = body->m_links.size();
+
+           std::cout << "numero de faces:  "<< numFaces <<std::endl;
+           std::cout << "numero de links:  "<< numLinks <<std::endl;
+           
+           for (size_t i = 0; i < numFaces; i++) {
+               btVector3 pos = body->m_faces[i].m_n[0]->m_x;
+               btVector3 pos1 = body->m_faces[i].m_n[1]->m_x;
+               btVector3 pos2 = body->m_faces[i].m_n[2]->m_x; 
+        
+               std::cout << "Triangulo : "<< i << "\n" << std::endl;
+               std::cout << " nodo: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               std::cout << " nodo: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
+               std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
+            }
+        ////////////////////////////////////////////////////////////////
+
         mObject = body;
-	    
-        //body->setTotalMass( bodyMass );
-	    //cloth->generateBendingConstraints(2,cloth->appendMaterial());
-	    
+	    	    
         
         getDynamicsWorld()->addSoftBody(this, mCollisionGroup, mCollisionMask);
         //getSoftDynamicsWorld()->addSoftBody(cloth);
@@ -358,6 +364,25 @@ namespace OgreBulletDynamics
     }
 
     void SoftBody::UpdateCut(Ogre::Real cutnode){
-           std::cout << "CORTANDO!!!!!!" << std::endl;  
+           std::cout << "CORTANDO!!!!!!" << std::endl;
+           int numFaces = static_cast<btSoftBody*>(mObject)->m_faces.size();
+           int numLinks = static_cast<btSoftBody*>(mObject)->m_links.size();
+
+           std::cout << "numero de faces:  "<< numFaces <<std::endl;
+           std::cout << "numero de links:  "<< numLinks <<std::endl;
+           
+           std::deque<Ogre::Vector3> npoints;
+           
+           for (size_t i = 0; i < numFaces; i++) {
+               btVector3 pos = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[0]->m_x;
+               btVector3 pos1 = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[1]->m_x;
+               btVector3 pos2 = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[2]->m_x; 
+               npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
+               std::cout << "Triangulo : "<< i << "\n" << std::endl;
+               std::cout << " nodo: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               std::cout << " nodo: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
+               std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
+           }
+
     }    
 }
