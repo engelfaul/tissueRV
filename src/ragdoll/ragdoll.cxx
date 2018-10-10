@@ -177,8 +177,16 @@ for(int n=0; n<numeroVertices;n++){
 
     for(int o=0;o<(totalVertices-numeroVertices);o+=numeroVertices){
       for(int p=0;p<numeroVertices-1;p++){
-        man->triangle(o+p,o+numeroVertices+p,o+numeroVertices+p+1);
-        man->triangle(o+numeroVertices+p+1,o+1+p,o+p);   
+        //se ajusta la forma en que se arman los triangulos para que queden igual como los arma bullet
+        //man->triangle(o+p,o+numeroVertices+p,o+numeroVertices+p+1);
+        //man->triangle(o+numeroVertices+p+1,o+1+p,o+p);
+        if((o+p)&1){
+          man->triangle(o+p,o+numeroVertices+p,o+numeroVertices+p+1);
+          man->triangle(o+p,o+numeroVertices+p+1,o+1+p); 
+        }else{
+          man->triangle(o+1+p,o+p,o+numeroVertices+p);
+          man->triangle(o+1+p,o+numeroVertices+p,o+numeroVertices+p+1);
+        }   
       }
     }
 
