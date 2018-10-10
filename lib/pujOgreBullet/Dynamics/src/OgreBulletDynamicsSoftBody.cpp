@@ -204,6 +204,80 @@ namespace OgreBulletDynamics
                     
                     
                     vbuf->unlock();      
+               
+                    ///////////////////////Investigando informacion de los faces en ogre///////////////////////////////////////////////////    
+                    //VertexIndexToShape::addIndexData(sub_mesh->indexData, mVertexCount);
+                    std::cout << "Investigando informacion de los faces en ogre" << std::endl;
+                    Ogre::IndexData *data2 = sub_mesh->indexData;
+                    int numIndices = data2->indexCount;
+                    int mIndexCount;
+                    std::cout << "index count: " <<numIndices <<std::endl;
+                    //VertexIndexToShape::addStaticVertexData(sub_mesh->vertexData);
+                    
+                        
+                        
+                        mIndexCount = (unsigned int)data2->indexCount;
+                        const unsigned int prev_size = mIndexCount;
+                        std::cout << "prev_size: " <<prev_size <<std::endl;
+                        unsigned int *tmp_ind = new unsigned int[mIndexCount];
+                        unsigned int  *mIndexBuffer;
+                     /*
+                        if (mIndexBuffer)
+                        {
+                            memcpy (tmp_ind, mIndexBuffer, sizeof(unsigned int) * prev_size);
+                            delete[] mIndexBuffer;
+                        }
+                     */   
+                        mIndexBuffer = tmp_ind;
+                        
+                        const unsigned int numTris = (unsigned int) data2->indexCount / 3;
+                        //std::cout << "numTris: " <<numTris <<std::endl;
+                        
+                        Ogre::HardwareIndexBufferSharedPtr ibuf = data2->indexBuffer;
+                        
+                        const bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
+                        
+                        unsigned int index_offset = prev_size;
+                        unsigned int offset  = vertexCount;
+                        if (use32bitindexes) 
+                        {
+                            std::cout << "entre al if " <<std::endl;
+                            /* //Aqui voy
+                            const unsigned int *pInt = static_cast<unsigned int*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+                            for (unsigned int k = 0; k < numTris; ++k)
+                            {
+                                mIndexBuffer[index_offset ++] = offset + *pInt++;
+                                mIndexBuffer[index_offset ++] = offset + *pInt++;
+                                mIndexBuffer[index_offset ++] = offset + *pInt++;
+                            }
+                            ibuf->unlock();
+                            */
+                        }
+                        else 
+                        {
+                            const unsigned short *pShort = static_cast<unsigned short*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+                            
+                            for(unsigned int k = 0; k < numTris; ++k)
+                            {
+                                /*
+                                offset + static_cast<unsigned int>(*pShort++) = mIndexBuffer[index_offset ++] ;
+                                offset + static_cast<unsigned int>(*pShort++) = mIndexBuffer[index_offset ++] ;
+                                offset + static_cast<unsigned int>(*pShort++) = mIndexBuffer[index_offset ++] ;
+                                */
+                               
+                               int ix = vertexCount + static_cast<unsigned int>(*pShort++) ;
+                               int iy = vertexCount + static_cast<unsigned int>(*pShort++) ;
+                               int iz = vertexCount + static_cast<unsigned int>(*pShort++) ;
+                               std::cout << "recuperando index del triangulo:  " << k <<": " << ix << " " << iy << " " << iz  <<std::endl; 
+                            }
+                            
+                            ibuf->unlock();
+                            
+                        }
+
+
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+               
                }
            }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,9 +331,8 @@ namespace OgreBulletDynamics
         body->getCollisionShape()->setUserPointer((void*)body);
 	    body->generateBendingConstraints(2,body->appendMaterial());
 	    
-        std::cout << "RestLengh: " << body->getRestLengthScale() << std::endl;
-        
-        ////////////Investigando informacion de los faces/////////////////////////////////////
+        ////////////Investigando informacion de los faces en bullet/////////////////////////////////////
+        std::cout << "Investigando informacion de los faces en bullet" << std::endl;
         int numFaces = body->m_faces.size();
         int numLinks = body->m_links.size();
 
@@ -277,7 +350,6 @@ namespace OgreBulletDynamics
                std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
             }
         ////////////////////////////////////////////////////////////////
-
         mObject = body;
 	    	    
         
@@ -316,7 +388,7 @@ namespace OgreBulletDynamics
                 
               //  std::cout << "Antes del if " <<std::endl;
                if (!sub_mesh->useSharedVertices ){ 
-               //    std::cout << "Adentro del if " <<std::endl;
+               //    actualizando informacion de los vertices
                     Ogre::VertexData *data = sub_mesh->vertexData;
                     const Ogre::VertexElement *posElem = data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION); 
                     Ogre::HardwareVertexBufferSharedPtr vbuf = data->vertexBufferBinding->getBuffer(posElem->getSource());
@@ -354,7 +426,74 @@ namespace OgreBulletDynamics
                         }
                     
                     
-                    vbuf->unlock();      
+                    vbuf->unlock();
+   ///////////////////////////////////Actualizando indices    
+                    //VertexIndexToShape::addIndexData(sub_mesh->indexData, mVertexCount);
+                    Ogre::IndexData *data2 = sub_mesh->indexData;
+                    int numIndices = data2->indexCount;
+                    int mIndexCount;
+                    //std::cout << "index count: " <<numIndices <<std::endl;
+                    //VertexIndexToShape::addStaticVertexData(sub_mesh->vertexData);
+                    
+                        
+                        
+                        mIndexCount = (unsigned int)data2->indexCount;
+                        const unsigned int prev_size = mIndexCount;
+                      //  std::cout << "prev_size: " <<prev_size <<std::endl;
+                        unsigned int *tmp_ind = new unsigned int[mIndexCount];
+                        unsigned int  *mIndexBuffer;
+                     /*
+                        if (mIndexBuffer)
+                        {
+                            memcpy (tmp_ind, mIndexBuffer, sizeof(unsigned int) * prev_size);
+                            delete[] mIndexBuffer;
+                        }
+                     */   
+                        mIndexBuffer = tmp_ind;
+                        
+                        const unsigned int numTris = (unsigned int) data2->indexCount / 3;
+                        //std::cout << "numTris: " <<numTris <<std::endl;
+                        
+                        Ogre::HardwareIndexBufferSharedPtr ibuf = data2->indexBuffer;
+                        
+                        const bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
+                        
+                        unsigned int index_offset = prev_size;
+                        unsigned int offset  = vertexCount;
+                        if (use32bitindexes) 
+                        {
+                            std::cout << "entre al if " <<std::endl;
+                            /* //Aqui voy
+                            const unsigned int *pInt = static_cast<unsigned int*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+                            for (unsigned int k = 0; k < numTris; ++k)
+                            {
+                                mIndexBuffer[index_offset ++] = offset + *pInt++;
+                                mIndexBuffer[index_offset ++] = offset + *pInt++;
+                                mIndexBuffer[index_offset ++] = offset + *pInt++;
+                            }
+                            ibuf->unlock();
+                            */
+                        }
+                        else 
+                        {
+                            const unsigned short *pShort = static_cast<unsigned short*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+                            
+                            for(unsigned int k = 0; k < numTris; ++k)
+                            {
+                                /*
+                                offset + static_cast<unsigned int>(*pShort++) = mIndexBuffer[index_offset ++] ;
+                                offset + static_cast<unsigned int>(*pShort++) = mIndexBuffer[index_offset ++] ;
+                                offset + static_cast<unsigned int>(*pShort++) = mIndexBuffer[index_offset ++] ;
+                                */
+                                offset + static_cast<unsigned int>(*pShort++) ;
+                                offset + static_cast<unsigned int>(*pShort++) ;
+                                offset + static_cast<unsigned int>(*pShort++) ;
+                            }
+                            
+                            ibuf->unlock();
+                            
+                        }
+                        
                }
            }
 
@@ -364,7 +503,7 @@ namespace OgreBulletDynamics
     }
 
     void SoftBody::UpdateCut(Ogre::Real cutnode){
-           std::cout << "CORTANDO!!!!!!" << std::endl;
+           
            int numFaces = static_cast<btSoftBody*>(mObject)->m_faces.size();
            int numLinks = static_cast<btSoftBody*>(mObject)->m_links.size();
 
@@ -378,11 +517,41 @@ namespace OgreBulletDynamics
                btVector3 pos1 = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[1]->m_x;
                btVector3 pos2 = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[2]->m_x; 
                npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
-               std::cout << "Triangulo : "<< i << "\n" << std::endl;
+               std::cout << "Triangulo before : "<< i << "\n" << std::endl;
                std::cout << " nodo: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
                std::cout << " nodo: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
                std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
            }
+
+            std::cout << "CORTANDO TRIANGULO: " << cutnode << "!!!!!!"<<std::endl;
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutnode);
+
+        
+            numFaces = static_cast<btSoftBody*>(mObject)->m_faces.size();
+            std::cout << "nuevo size: " << numFaces <<std::endl;
+            /* For para vericar que se quito un trinagulo
+            for (size_t i = 0; i < numFaces; i++) {
+                  
+               btVector3 pos = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[0]->m_x;
+               btVector3 pos1 = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[1]->m_x;
+               btVector3 pos2 = static_cast<btSoftBody*>(mObject)->m_faces[i].m_n[2]->m_x; 
+               npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
+               
+               std::cout << "Triangulo after: "<< i << "\n" << std::endl;
+               std::cout << " nodo: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               std::cout << " nodo: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
+               std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
+           }*/
+            std::cout << "Recuperando entidad para cortarla : "<< this->mEntity->getName() << "\n" << std::endl;
+      /*
+           if (!sub_mesh->useSharedVertices)
+        {
+            VertexIndexToShape::addIndexData(sub_mesh->indexData, mVertexCount);
+            VertexIndexToShape::addStaticVertexData(sub_mesh->vertexData);
+        }
+        */    
+          //static_cast<btSoftBody*>(mObject)->m_faces.size() = static_cast<btSoftBody*>(mObject)->m_faces.size()-1;  
+           
 
     }    
 }
