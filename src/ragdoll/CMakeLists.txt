@@ -15,6 +15,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/lib/src/softObject
   )
 add_executable(RagDollApp ragdoll.cxx ../softObject/SceneSoftObject.cpp)
-target_link_libraries(RagDollApp pujOgreBullet)
+target_link_libraries(RagDollApp pujOgreBullet Devices)
+
 
 ## eof - $RCSfile$

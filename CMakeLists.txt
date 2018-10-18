@@ -27,6 +27,12 @@ mark_as_advanced(APP_TYPE)
 ## == Force c++11
 set(CMAKE_CXX_STANDARD 11)
 
+## -------------------------------------------------------------------------
+## Find VRPN
+## -------------------------------------------------------------------------
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/IncludeVRPN.cmake)
+
+
 ## == Prepare header generator to build shared libs
 include(GenerateExportHeader)
 

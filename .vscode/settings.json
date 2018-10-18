@@ -51,6 +51,7 @@
         "list": "cpp",
         "unordered_set": "cpp",
         "memory": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "*.txx": "cpp"
     }
 }

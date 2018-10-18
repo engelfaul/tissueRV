@@ -18,6 +18,12 @@
 
 #include "../softObject/SceneSoftObject.h" 
 
+//include vrpn descomentariar cuando se tenga instalado
+#include "../devices/VRPN_Device.h"
+#include "../devices/VRPN_PhantomOmni.h"
+#include <OgreLogManager.h>
+
+
 /**
  */
 class RagDollApp
@@ -32,6 +38,7 @@ public:
   virtual ~RagDollApp( );
   Ogre::Vector3 direccion;
   Ogre::Vector3 posTool;
+  typedef std::vector< VRPN_Device* > TDevices; 
 //  Ogre::Vector3 *vertices;
 //  Ogre::uint32 *indices;
 //  size_t vertex_count;
@@ -44,6 +51,7 @@ protected:
   virtual void createScene( ) override;
   virtual void createCamera( ) override;
   virtual bool frameRenderingQueued( const Ogre::FrameEvent& evt ) override;
+  TDevices m_Devices;  
   Ogre::AnimationState* m_AnimationState;
 };
 
@@ -239,7 +247,7 @@ for(int n=0; n<numeroVertices;n++){
       );
   ninja->setCastShadows( true );
   Ogre::AxisAlignedBox bbox = ninja->getBoundingBox( );
-
+/*
   // Associate it to a node
   Ogre::SceneNode* ninja_node =
     this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
@@ -247,6 +255,8 @@ for(int n=0; n<numeroVertices;n++){
       );
   ninja_node->attachObject( ninja );
   ninja_node->translate(5,10,5);
+  */
+  
   //////////Objeto de prueba
     // Load model entity
   Ogre::Entity* ship =
@@ -323,7 +333,7 @@ for(int n=0; n<numeroVertices;n++){
 
 //  this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 /////////////////////////////////////////////////////////////////////////////////////
-
+/*
   // Associate ninja to the physical world
   Ogre::Quaternion q( 1, 1, 2, 3 );
   q.normalise( );
@@ -332,13 +342,28 @@ for(int n=0; n<numeroVertices;n++){
     Ogre::Vector3( 5, 20, 5 ),
     q
     );
-
+*/
 
  //indi = new int[ibufCount/3];
 
   for(short i=0 ; i<(ibufCount/3) ; i++){
     indi[i]= 1;
   }
+
+
+  //conectando phantom
+  //creando phantom, OJO: correr el archivo vrpn_server de la maquina del servidor
+  VRPN_PhantomOmni* phantom0 = new VRPN_PhantomOmni( );
+
+  if( !( phantom0->connect( "Phantom@10.3.137.56" ) ) )
+  {
+    Ogre::LogManager::getSingletonPtr( )->
+      logMessage( "!!! Error connecting to Phantom@host !!!" );
+    delete phantom0;
+    phantom0 = NULL;
+  }
+  this->m_Devices.push_back( phantom0 );
+
 }
 
 // -------------------------------------------------------------------------
@@ -866,6 +891,15 @@ void RagDollApp::createColourCube()
 bool RagDollApp::
 frameRenderingQueued( const Ogre::FrameEvent& evt )
 {
+
+  
+
+  if( this->m_Devices[ 0 ] != NULL ) {
+    VRPN_PhantomOmni* phantom = dynamic_cast< VRPN_PhantomOmni* >( this->m_Devices[ 0 ] );
+    VRPN_PhantomOmni_State phantom_state = phantom->capture( );
+    //pendiente crear funcion de actualizar pos herramienta
+    //this->updateCatheterPosition( evt, phantom_state.Position[2], phantom_state.Position[1], phantom_state.Position[0] );
+  }
 
   std::chrono::duration<double> deltaTime; 
   deltaTime = static_cast<std::chrono::duration<double>>(evt.timeSinceLastFrame);

@@ -162,9 +162,64 @@ namespace OgreBulletDynamics
         //this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
         for (size_t i = 0; i < numSoft; i++) {
 
-          if(stepTime == 50 ){
-            static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime);    
+          if(stepTime == 54 ){
+            static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime);
+            //static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime+1);    
           }      
+          if (stepTime == 64){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(55);
+          }
+          if (stepTime == 74){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(56);
+          }
+          if (stepTime == 84){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(57);
+          }
+          if (stepTime == 94){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(58);
+          }
+          if (stepTime == 104){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(59);
+          }
+          if (stepTime == 114){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(60);
+          }
+          if (stepTime == 124){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(61);
+          }
+          if (stepTime == 134){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(62);
+          }
+          if (stepTime == 144){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(63);
+          }
+          if (stepTime == 154){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(64);
+          }
+          if (stepTime == 154){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(65);
+          }
+          if (stepTime == 164){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(66);
+          }
+          if (stepTime == 174){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(67);
+          }
+          if (stepTime == 184){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(68);
+          }
+          if (stepTime == 194){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(69);
+          }
+          if (stepTime == 204){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(70);
+          }
+          if (stepTime == 214){
+              static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(71);
+          }
+
+
+
 
           static_cast<SoftBody*>(mSoftObjects[i])->UpdateMesh();
                   
