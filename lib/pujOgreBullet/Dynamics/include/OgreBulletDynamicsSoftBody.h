@@ -42,6 +42,7 @@ namespace OgreBulletDynamics {
         protected:
             Ogre::Entity * mEntity;
             int * indexBulletNodes;
+            int * indexBulletFaces;
             short mCollisionGroup;
             short mCollisionMask;
     };
