@@ -28,9 +28,10 @@ mark_as_advanced(APP_TYPE)
 set(CMAKE_CXX_STANDARD 11)
 
 ## -------------------------------------------------------------------------
-## Find VRPN
+## Find VRPN and OpenHaptics
 ## -------------------------------------------------------------------------
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/IncludeVRPN.cmake)
+#INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/IncludeOPENHAPTICS.cmake)
 
 
 ## == Prepare header generator to build shared libs

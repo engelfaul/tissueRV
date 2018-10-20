@@ -109,6 +109,17 @@ namespace pujOgreBullet
       const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY
       );
 
+    void addStaticRigidPhysicsTrimesh(
+      Ogre::Entity* entity,
+      Ogre::SceneNode* node,
+      const std::string& name,
+      float bodyRestitution,
+      float bodyFriction,
+      float bodyMass,
+      const Ogre::Vector3& position = Ogre::Vector3::ZERO,
+      const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY
+      );
+
    void addSoftPhysicsTrimesh(
       Ogre::Entity* entity,
       Ogre::SceneNode* node,
