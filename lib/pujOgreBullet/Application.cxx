@@ -199,6 +199,30 @@ addRigidPhysicsTrimesh(
     );
     body->setDebugDisplayEnabled(true);    
 }
+//--------------------------------------------------------------------------------------------
+void pujOgreBullet::Application::
+addStaticRigidPhysicsTrimesh(
+  Ogre::Entity* entity,
+  Ogre::SceneNode* node,
+  const std::string& name,
+  float bodyRestitution,
+  float bodyFriction,
+  float bodyMass,
+  const Ogre::Vector3& position,
+  const Ogre::Quaternion& orientation
+  )
+{
+  OgreBulletCollisions::StaticMeshToShapeConverter* conv =
+    new OgreBulletCollisions::StaticMeshToShapeConverter( entity );
+  OgreBulletDynamics::RigidBody* body =
+    new OgreBulletDynamics::RigidBody( name, this->m_BulletWorld );
+  body->setShape(
+    node, conv->createTrimesh( ),
+    bodyRestitution, bodyFriction, bodyMass,
+    position, orientation
+    );
+    body->setDebugDisplayEnabled(true);    
+}
 // -------------------------------------------------------------------------
 void pujOgreBullet::Application::
 addSoftPhysicsTrimesh(

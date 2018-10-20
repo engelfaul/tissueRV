@@ -32,6 +32,7 @@ class RagDollApp
 public:
   typedef RagDollApp                 Self;
   typedef pujOgreBullet::Application Superclass;
+  virtual void updateSimulation( const Ogre::Real& timeoffset );
 
 public:
   RagDollApp( );
@@ -46,13 +47,22 @@ public:
   void setMesh();
   void createColourCube();
   void updateMesh(int trian );
-  void UpdatePhysics(std::chrono::duration<double> deltaTime);	
+  void UpdatePhysics(std::chrono::duration<double> deltaTime);
+  void updateToolPosition ( const Ogre::FrameEvent& evt, double x, double y, double z );
+  void applyCollisionForceFeedback( );
+  void updateCatheterPosition( );
+  double getDx();
+  double getDy();
+  double getDz();	
 protected:
   virtual void createScene( ) override;
   virtual void createCamera( ) override;
   virtual bool frameRenderingQueued( const Ogre::FrameEvent& evt ) override;
   TDevices m_Devices;  
   Ogre::AnimationState* m_AnimationState;
+
+  //pos
+  double dx,dy,dz;
 };
 
 // -------------------------------------------------------------------------
@@ -328,8 +338,14 @@ for(int n=0; n<numeroVertices;n++){
 // Associate tool to the physical world
   Ogre::Quaternion qTool( 1, 1, 2, 3 );
   qTool.normalise( );
-  //this->addPhysicsPlane(
-  //  tool,  "tool_physics", 0.000001, 0.00001);
+    // Associate ninja to the physical world
+  
+  this->addStaticRigidPhysicsTrimesh(
+    tool, tool_node, "tool_physics", 0.0009, 0.0009, 0.01,
+    Ogre::Vector3( 5, 20, 5 ),
+    qTool
+    );
+
 
 //  this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 /////////////////////////////////////////////////////////////////////////////////////
@@ -898,7 +914,7 @@ frameRenderingQueued( const Ogre::FrameEvent& evt )
     VRPN_PhantomOmni* phantom = dynamic_cast< VRPN_PhantomOmni* >( this->m_Devices[ 0 ] );
     VRPN_PhantomOmni_State phantom_state = phantom->capture( );
     //pendiente crear funcion de actualizar pos herramienta
-    //this->updateCatheterPosition( evt, phantom_state.Position[2], phantom_state.Position[1], phantom_state.Position[0] );
+    this->updateToolPosition( evt, phantom_state.Position[2], phantom_state.Position[1], phantom_state.Position[0] );
   }
 
   std::chrono::duration<double> deltaTime; 
@@ -918,5 +934,45 @@ frameRenderingQueued( const Ogre::FrameEvent& evt )
 void RagDollApp::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   //std::cout <<"Loop: " << deltaTime.count() <<"\n";
 }
+
+void RagDollApp::updateToolPosition ( const Ogre::FrameEvent& evt, double x, double y, double z ){
+  this->dx = x; this->dy = y; this->dz = z;
+  //std::cout <<"Loop: " << deltaTime.count() <<"\n";
+  
+  /*
+  if( this->m_View->isCollisionDetectedBetweenExistingNodes( ) ){
+    this->applyCollisionForceFeedback();
+  }
+  */
+  Ogre::Real timeoffset = evt.timeSinceLastFrame;
+  this->updateSimulation( timeoffset );
+  
+}
+
+void RagDollApp::applyCollisionForceFeedback( ){
+  //hduVector3Dd feedbackForce( 0.2, 0.5, 0 );
+  //hdSetDoublev( HD_CURRENT_FORCE, feedbackForce );
+}
+
+
+void RagDollApp::
+updateSimulation( const Ogre::Real& timeoffset )
+{
+  //this->m_AnimationState->addTime( timeoffset );
+  this->updateCatheterPosition();
+  //this->updateVesselDeformations();
+}
+
+void RagDollApp::updateCatheterPosition( ) {
+
+  const unsigned int movementScale = 1;
+	double movx = movementScale * this->dx;
+	double movy = movementScale * this->dy;
+	double movz = movementScale * this->dz;
+
+	Ogre::SceneNode* catheterNode = this->m_SceneMgr->getSceneNode("tool_node");
+  catheterNode->translate( movx, movy, movz );
+}
+
 // eof - $RCSfile$
  
