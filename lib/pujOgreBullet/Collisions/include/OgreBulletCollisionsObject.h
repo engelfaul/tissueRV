@@ -108,7 +108,7 @@ namespace OgreBulletCollisions
         ObjectState     *mState;
         CollisionsWorld *mWorld;
 
-        btCollisionObject *mObject;
+        //btCollisionObject *mObject;
 
         Ogre::AxisAlignedBox mBounds;
 
@@ -117,6 +117,7 @@ namespace OgreBulletCollisions
 
     public:
         static const Ogre::String mMovableType;
+        btCollisionObject *mObject;
     };
     // -------------------------------------------------------------------------
 }

@@ -33,6 +33,7 @@ namespace pujOgreBullet
   public:
     Application( );
     virtual ~Application( );
+    void updatePositionBullet(Ogre::Vector3& posVector,Ogre::SceneNode* node1);
 
   protected:
     virtual void createScene( ) override;
@@ -46,6 +47,7 @@ namespace pujOgreBullet
         Ogre::Vector3(  10000,  10000,  10000 )
         )
       );
+     
 
     void addPhysicsPlane(
       const Ogre::Plane& plane,

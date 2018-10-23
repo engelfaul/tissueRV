@@ -138,7 +138,7 @@ namespace OgreBulletDynamics
 		                                            btVector3(0,10,9),
 		                                            btVector3(9,10,9),
 		                                            NUM_X,NUM_Z, 
-		                                            1+2+4+8,true);
+		                                            1+2,true);
         
         //investigando valores de los nodos
        int numNodes = body->m_nodes.size();
