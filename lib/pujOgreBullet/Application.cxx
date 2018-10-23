@@ -216,12 +216,18 @@ addStaticRigidPhysicsTrimesh(
     new OgreBulletCollisions::StaticMeshToShapeConverter( entity );
   OgreBulletDynamics::RigidBody* body =
     new OgreBulletDynamics::RigidBody( name, this->m_BulletWorld );
+  /*
   body->setShape(
     node, conv->createTrimesh( ),
     bodyRestitution, bodyFriction, bodyMass,
     position, orientation
+    );*/
+  body->setStaticShape(
+    node, conv->createTrimesh(),
+    bodyRestitution, bodyFriction,
+    position, orientation
     );
-    body->setDebugDisplayEnabled(true);    
+    body->setDebugDisplayEnabled(true);   
 }
 // -------------------------------------------------------------------------
 void pujOgreBullet::Application::
@@ -261,5 +267,27 @@ updatePhysics()
   std::cout <<"Actualizando fisica " <<"\n";
   
 }
+
+// -------------------------------------------------------------------------
+void pujOgreBullet::Application::
+updatePositionBullet(
+   Ogre::Vector3& posVector, Ogre::SceneNode* node1
+  )
+{
+
+    OgreBulletCollisions::Object *object_obj1 = this->m_BulletWorld->findObject( node1 );
+    
+    //object_obj1->setPosition(posVector);
+    static_cast<btRigidBody*>(object_obj1->mObject)->translate(btVector3(posVector.x,posVector.y,posVector.z) );
+  /*
+  this->m_BulletWorld =
+    new OgreBulletDynamics::DynamicsWorld(
+      this->m_SceneMgr, bounds, gravityVector, true, true, 10000
+      );
+      */
+}
+
+// -------------------------------------------------------------------------
+
 
 // eof - $RCSfile$

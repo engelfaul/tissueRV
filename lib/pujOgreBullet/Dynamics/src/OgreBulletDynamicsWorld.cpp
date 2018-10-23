@@ -160,8 +160,9 @@ namespace OgreBulletDynamics
         int numSoft = static_cast<btSoftRigidDynamicsWorld *> (mWorld)->getSoftBodyArray().size();
           // Llamar actualización de física de cada objeto suave.
         //this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
+        
         for (size_t i = 0; i < numSoft; i++) {
-
+            /*
           if(stepTime == 54 ){
             static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime);
             //static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime+1);    
@@ -219,13 +220,13 @@ namespace OgreBulletDynamics
           }
 
 
-
+            */
 
           static_cast<SoftBody*>(mSoftObjects[i])->UpdateMesh();
                   
         }
-
-    
+        
+        
         // Reset Debug Lines
         if (mDebugDrawer)
         {
@@ -241,7 +242,8 @@ namespace OgreBulletDynamics
         static_cast<btSoftRigidDynamicsWorld *> (mWorld)->stepSimulation(elapsedTime, 10);
 		if (mDebugContactPoints) 
 		{
-			///one way to draw all the contact points is iterating over contact manifolds / points:
+            
+        	///one way to draw all the contact points is iterating over contact manifolds / points:
             const unsigned int numManifolds = mWorld->getDispatcher()->getNumManifolds();
             for (unsigned int i = 0; i < numManifolds; ++i)
 			{
@@ -298,7 +300,8 @@ namespace OgreBulletDynamics
 				}
 			}
             */            
-		}    
+		} 
+           
     }
     // -------------------------------------------------------------------------
     void DynamicsWorld::removeConstraint(TypedConstraint *constraint)

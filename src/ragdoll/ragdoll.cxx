@@ -58,6 +58,7 @@ protected:
   virtual void createScene( ) override;
   virtual void createCamera( ) override;
   virtual bool frameRenderingQueued( const Ogre::FrameEvent& evt ) override;
+  bool keyPressed( const OIS::KeyEvent& arg ) override;
   TDevices m_Devices;  
   Ogre::AnimationState* m_AnimationState;
 
@@ -257,7 +258,7 @@ for(int n=0; n<numeroVertices;n++){
       );
   ninja->setCastShadows( true );
   Ogre::AxisAlignedBox bbox = ninja->getBoundingBox( );
-/*
+
   // Associate it to a node
   Ogre::SceneNode* ninja_node =
     this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
@@ -265,7 +266,7 @@ for(int n=0; n<numeroVertices;n++){
       );
   ninja_node->attachObject( ninja );
   ninja_node->translate(5,10,5);
-  */
+  
   
   //////////Objeto de prueba
     // Load model entity
@@ -340,25 +341,25 @@ for(int n=0; n<numeroVertices;n++){
   qTool.normalise( );
     // Associate ninja to the physical world
   
-  this->addStaticRigidPhysicsTrimesh(
-    tool, tool_node, "tool_physics", 0.0009, 0.0009, 0.01,
-    Ogre::Vector3( 5, 20, 5 ),
+  this->addPhysicsConvex(
+    tool, tool_node, "tool_physics", 0.0009, 0.0009, 0,
+    Ogre::Vector3( -10, 20, -10 ),
     qTool
     );
 
 
 //  this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 /////////////////////////////////////////////////////////////////////////////////////
-/*
+
   // Associate ninja to the physical world
   Ogre::Quaternion q( 1, 1, 2, 3 );
   q.normalise( );
   this->addPhysicsConvex(
     ninja, ninja_node, "ninja_physics", 0.0009, 0.0009, 75,
-    Ogre::Vector3( 5, 20, 5 ),
+    Ogre::Vector3( -10, 5, -10 ),
     q
     );
-*/
+
 
  //indi = new int[ibufCount/3];
 
@@ -368,7 +369,7 @@ for(int n=0; n<numeroVertices;n++){
 
 
   //conectando phantom
-  //creando phantom, OJO: correr el archivo vrpn_server de la maquina del servidor
+  //creando phantom, OJO: correr el archivo vrpn_server de la maquina del servidor de  VRPN/vrpn-build/Debug
   VRPN_PhantomOmni* phantom0 = new VRPN_PhantomOmni( );
 
   if( !( phantom0->connect( "Phantom@10.3.137.56" ) ) )
@@ -387,7 +388,7 @@ void RagDollApp::
 createCamera( )
 {
   this->Superclass::createCamera( );
-  this->m_Camera->setPosition( Ogre::Vector3( 25, 25, 25 ) );
+  this->m_Camera->setPosition( Ogre::Vector3( 0, 25, 25 ) );
   this->m_Camera->lookAt( Ogre::Vector3( 0, 10, 0 ) );
   this->m_Camera->setNearClipDistance( 5 );
 }
@@ -523,7 +524,7 @@ void RagDollApp::setMesh(){
 }
 
 
-bool pujOgre::Application::
+bool RagDollApp::
 keyPressed( const OIS::KeyEvent& arg )
 {
   
@@ -593,34 +594,35 @@ keyPressed( const OIS::KeyEvent& arg )
 
   //moviendo el instrumento
   Ogre::SceneNode* planeBlender_node = this->m_SceneMgr->getSceneNode("tool_node");
-  float dx  = 0;
-  float dy  = 0;
-  float dz  = 0;
+  float dx1  = 0;
+  float dy1  = 0;
+  float dz1  = 0;
   if(OIS::KC_W==a){
-    dx = 0.1;
+    dx1 = 0.1;
   }
   
   if(OIS::KC_S==a){
-    dx = -0.1;
+    dx1 = -0.1;
   }
 
   if(OIS::KC_A==a){
-    dz = -0.1;
+    dz1 = -0.1;
   }
 
   if(OIS::KC_D==a){
-    dz = 0.1;
+    dz1 = 0.1;
   }
 
   if(OIS::KC_UP==a){
-    dy = 0.1;
+    dy1 = 0.1;
   }
 
   if(OIS::KC_DOWN==a){
-    dy = -0.1;
+    dy1 = -0.1;
   } 
-    planeBlender_node->translate(dx,dy,dz);
-    
+    planeBlender_node->translate(dx1,dy1,dz1);
+    Ogre::Vector3 vpos = Ogre::Vector3(dx1,dy1,dz1);
+    this->updatePositionBullet(vpos,planeBlender_node); //pendiente verificar esto
 
 
   /*
@@ -914,7 +916,7 @@ frameRenderingQueued( const Ogre::FrameEvent& evt )
     VRPN_PhantomOmni* phantom = dynamic_cast< VRPN_PhantomOmni* >( this->m_Devices[ 0 ] );
     VRPN_PhantomOmni_State phantom_state = phantom->capture( );
     //pendiente crear funcion de actualizar pos herramienta
-    this->updateToolPosition( evt, phantom_state.Position[2], phantom_state.Position[1], phantom_state.Position[0] );
+    this->updateToolPosition( evt, phantom_state.Position[0], phantom_state.Position[1], phantom_state.Position[2] );
   }
 
   std::chrono::duration<double> deltaTime; 
@@ -963,7 +965,8 @@ updateSimulation( const Ogre::Real& timeoffset )
   //this->updateVesselDeformations();
 }
 
-void RagDollApp::updateCatheterPosition( ) {
+void RagDollApp::
+updateCatheterPosition( ) {
 
   const unsigned int movementScale = 1;
 	double movx = movementScale * this->dx;
@@ -972,6 +975,9 @@ void RagDollApp::updateCatheterPosition( ) {
 
 	Ogre::SceneNode* catheterNode = this->m_SceneMgr->getSceneNode("tool_node");
   catheterNode->translate( movx, movy, movz );
+  //catheterNode->setPosition( movx, movy, movz );
+  Ogre::Vector3 vpos = Ogre::Vector3(movx,movy,movz);
+  this->updatePositionBullet(vpos,catheterNode); //pendiente verificar esto
 }
 
 // eof - $RCSfile$
