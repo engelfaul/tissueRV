@@ -331,19 +331,19 @@ for(int n=0; n<numeroVertices;n++){
       "tool_node"
       );
   tool_node->attachObject( tool );
-  tool_node->translate(0,15,0);
+  tool_node->translate(0,0,0);
 
   posTool   = Ogre::Vector3(0,15,0); 
   direccion = Ogre::Vector3(0,14,0);
 
 // Associate tool to the physical world
-  Ogre::Quaternion qTool( 1, 1, 2, 3 );
+  Ogre::Quaternion qTool( 2, 1, 1, 1 );
   qTool.normalise( );
     // Associate ninja to the physical world
   
   this->addPhysicsConvex(
     tool, tool_node, "tool_physics", 0.0009, 0.0009, 0,
-    Ogre::Vector3( -10, 20, -10 ),
+    Ogre::Vector3( 0, 0, 0 ),
     qTool
     );
 
@@ -359,7 +359,8 @@ for(int n=0; n<numeroVertices;n++){
     Ogre::Vector3( -10, 5, -10 ),
     q
     );
-
+//addRigidPhysicsTrimesh
+//addPhysicsConvex
 
  //indi = new int[ibufCount/3];
 
@@ -622,7 +623,7 @@ keyPressed( const OIS::KeyEvent& arg )
   } 
     planeBlender_node->translate(dx1,dy1,dz1);
     Ogre::Vector3 vpos = Ogre::Vector3(dx1,dy1,dz1);
-    this->updatePositionBullet(vpos,planeBlender_node); //pendiente verificar esto
+    this->updatePositionBullet(vpos,planeBlender_node); //pendiente verificar esto, la punta no colisiona
 
 
   /*
