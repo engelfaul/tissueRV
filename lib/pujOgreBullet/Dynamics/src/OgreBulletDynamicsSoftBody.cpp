@@ -131,14 +131,14 @@ namespace OgreBulletDynamics
         const btScalar s=4; //size of cloth patch
 		const int NUM_X=10; //vertices on X axis
 		const int NUM_Z=10; //vertices on Z axis
-                                                            
+        int posy= node->getPosition().y;                                                   
         btSoftBody *body = btSoftBodyHelpers::CreatePatch(myWorld->getWorldInfo(),
 		                                            btVector3(0,10,0),
 		                                            btVector3(9,10,0),
 		                                            btVector3(0,10,9),
 		                                            btVector3(9,10,9),
 		                                            NUM_X,NUM_Z, 
-		                                            1+2,true);
+		                                            1+2+4+8,true);
         
         //investigando valores de los nodos
        int numNodes = body->m_nodes.size();
@@ -699,7 +699,11 @@ namespace OgreBulletDynamics
                         }
             
             }
-          
 
+            //actualizar la animacion en bullet
+            //(myWorld->getWorldInfo()
+            std::cout << "recuperando world info: " << static_cast<btSoftBody*>(mObject)->m_worldInfo->air_density <<std::endl;
+            static_cast<btSoftBody*>(mObject)->m_worldInfo->m_sparsesdf.Reset();
+            
     }    
 }

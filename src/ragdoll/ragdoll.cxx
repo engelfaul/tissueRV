@@ -968,17 +968,29 @@ updateSimulation( const Ogre::Real& timeoffset )
 
 void RagDollApp::
 updateCatheterPosition( ) {
+  //pos before
+  double befx;
+  double befy;
+  double befz;
 
-  const unsigned int movementScale = 1;
-	double movx = movementScale * this->dx;
-	double movy = movementScale * this->dy;
-	double movz = movementScale * this->dz;
 
+  const unsigned int movementScale = 40;
+  const unsigned int movementTranslate = 7;
+	double movx = (movementScale * this->dx)+movementTranslate;
+	double movy = (movementScale * this->dy)+movementTranslate;
+	double movz = (movementScale * this->dz)+movementTranslate;
+
+  
 	Ogre::SceneNode* catheterNode = this->m_SceneMgr->getSceneNode("tool_node");
-  catheterNode->translate( movx, movy, movz );
-  //catheterNode->setPosition( movx, movy, movz );
+  
+  Ogre::Vector3 befpos = catheterNode->getPosition();
+  
+  //catheterNode->translate( movx, movy, movz );
+  catheterNode->setPosition( movx, movy, movz );
   Ogre::Vector3 vpos = Ogre::Vector3(movx,movy,movz);
-  this->updatePositionBullet(vpos,catheterNode); //pendiente verificar esto
+  Ogre::Vector3 transObject = vpos-befpos;
+  
+  this->updatePositionBullet(transObject,catheterNode); //pendiente verificar esto
 }
 
 // eof - $RCSfile$
