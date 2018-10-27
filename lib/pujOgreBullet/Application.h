@@ -3,6 +3,8 @@
 
 #include <pujOgre/Application.h>
 #include <OgreAxisAlignedBox.h>
+//#include <btCollisionWorld.h>
+
 
 namespace OgreBulletDynamics
 {
@@ -34,6 +36,7 @@ namespace pujOgreBullet
     Application( );
     virtual ~Application( );
     void updatePositionBullet(Ogre::Vector3& posVector,Ogre::SceneNode* node1);
+    bool isCollisionDetected( Ogre::SceneNode* node1, Ogre::SceneNode* node2 );
 
   protected:
     virtual void createScene( ) override;
@@ -137,6 +140,8 @@ namespace pujOgreBullet
 
   public:
     OgreBulletDynamics::DynamicsWorld* m_BulletWorld;
+  //  btCollisionWorld* m_collisionsWorld;
+
   };
 
 } // ecapseman

@@ -155,6 +155,7 @@ namespace OgreBulletDynamics
         
         //actualizando el mesh
        // stepTime=stepTime+elapsedTime;
+      
        stepTime=stepTime+1;
         std::cout <<"time test!!!: "<< stepTime <<"\n";
         int numSoft = static_cast<btSoftRigidDynamicsWorld *> (mWorld)->getSoftBodyArray().size();
@@ -162,7 +163,7 @@ namespace OgreBulletDynamics
         //this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
         
         for (size_t i = 0; i < numSoft; i++) {
-            
+            /*
           if(stepTime == 54 ){
             static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime);
             //static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime+1);    
@@ -221,12 +222,12 @@ namespace OgreBulletDynamics
           }
 
 
-            
+            */
 
           static_cast<SoftBody*>(mSoftObjects[i])->UpdateMesh();
                   
         }
-        
+    
         
         // Reset Debug Lines
         if (mDebugDrawer)

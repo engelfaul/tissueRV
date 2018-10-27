@@ -70,10 +70,10 @@ mark_as_advanced(OPENHAPTICS_NESTED_TARGETS)
 ###
 
 include(SelectLibraryConfigurations)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/ListCombinations.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/CleanDirectoryList.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/CleanLibraryList.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/ProgramFilesGlob.cmake)
+#include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/ListCombinations.cmake)
+#include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/CleanDirectoryList.cmake)
+#include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/CleanLibraryList.cmake)
+#include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/ProgramFilesGlob.cmake)
 
 set(_nest_targets)
 set(_incsearchdirs)
@@ -138,19 +138,19 @@ if(WIN32)
 	clean_directory_list(_libsearchdirs ${_libsearch} ${_libsearch2})
 endif()
 
-list_combinations(_incsearch
-	PREFIXES
-	"${OPENHAPTICS_ROOT_DIR}"
-	${_dirs}
-	SUFFIXES
-	"/include")
-list_combinations(_incsearch2
-	PREFIXES
-	"${OPENHAPTICS_ROOT_DIR}"
-	${_dirs}
-	SUFFIXES
-	"/utilities/include")
-clean_directory_list(_incsearchdirs ${_incsearch} ${_incsearch2})
+#list_combinations(_incsearch
+#	PREFIXES
+#	"${OPENHAPTICS_ROOT_DIR}"
+#	${_dirs}
+#	SUFFIXES
+#	"/include")
+#list_combinations(_incsearch2
+#	PREFIXES
+#	"${OPENHAPTICS_ROOT_DIR}"
+#	${_dirs}
+#	SUFFIXES
+#	"/utilities/include")
+#clean_directory_list(_incsearchdirs ${_incsearch} ${_incsearch2})
 
 set(_deps_check)
 set(_deps_libs)

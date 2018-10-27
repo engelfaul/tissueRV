@@ -23,6 +23,10 @@
 #include "../devices/VRPN_PhantomOmni.h"
 #include <OgreLogManager.h>
 
+//libreias openhaptics  :O
+#include <HD/hd.h>
+#include <HDU/hduVector.h>
+
 
 /**
  */
@@ -49,8 +53,9 @@ public:
   void updateMesh(int trian );
   void UpdatePhysics(std::chrono::duration<double> deltaTime);
   void updateToolPosition ( const Ogre::FrameEvent& evt, double x, double y, double z );
-  void applyCollisionForceFeedback( );
   void updateCatheterPosition( );
+  bool isCollisionDetectedBetweenExistingNodes( );
+  void applyCollisionForceFeedback( );
   double getDx();
   double getDy();
   double getDz();	
@@ -181,10 +186,12 @@ Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
 man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 int numeroVertices = 10;
+int largo = 10;
+double resx = numeroVertices/largo;
 for(int n=0; n<numeroVertices;n++){
      for(int m=0; m<numeroVertices;m++){
        std::cout << "vertice:  "<< m << " "<< n << "\n" << std::endl;
-        man->position(m, 10, n);
+        man->position(resx*m, 10, resx*n);
         man->normal(0, 1, 0);
      } 
   }
@@ -218,7 +225,7 @@ for(int n=0; n<numeroVertices;n++){
     Ogre::Entity* thisEntity = this->m_SceneMgr->createEntity("pielEnity", "test");
       //thisEntity->setMaterialName("Mat");
       Ogre::AxisAlignedBox bboxSoft = thisEntity->getBoundingBox( );
-      Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+      Ogre::SceneNode* thisSceneNode = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode("piel_node");
       //thisSceneNode->setPosition(0, 5, 0);
       thisSceneNode->attachObject(thisEntity);
       std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
@@ -320,7 +327,7 @@ for(int n=0; n<numeroVertices;n++){
     // Load model entity
   Ogre::Entity* tool =
     this->m_SceneMgr->createEntity(
-      "tool", "tool.mesh"
+      "tool", "tool2.mesh"
       );
   tool->setCastShadows( true );
   Ogre::AxisAlignedBox bbox4 = tool->getBoundingBox( );
@@ -331,17 +338,18 @@ for(int n=0; n<numeroVertices;n++){
       "tool_node"
       );
   tool_node->attachObject( tool );
+  //tool_node->scale(2,2,2);
   tool_node->translate(0,0,0);
 
   posTool   = Ogre::Vector3(0,15,0); 
   direccion = Ogre::Vector3(0,14,0);
 
 // Associate tool to the physical world
-  Ogre::Quaternion qTool( 2, 1, 1, 1 );
+  Ogre::Quaternion qTool( 5, 1, 1, 1 );
   qTool.normalise( );
     // Associate ninja to the physical world
-  
-  this->addPhysicsConvex(
+  //addPhysicsCylinder addPhysicsConvex  addPhysicsSphere addRigidPhysicsTrimesh
+  this->addPhysicsSphere(
     tool, tool_node, "tool_physics", 0.0009, 0.0009, 0,
     Ogre::Vector3( 0, 0, 0 ),
     qTool
@@ -362,7 +370,7 @@ for(int n=0; n<numeroVertices;n++){
 //addRigidPhysicsTrimesh
 //addPhysicsConvex
 
- //indi = new int[ibufCount/3];
+ //indi = new int[ibufCount/3];//probando
 
   for(short i=0 ; i<(ibufCount/3) ; i++){
     indi[i]= 1;
@@ -952,12 +960,6 @@ void RagDollApp::updateToolPosition ( const Ogre::FrameEvent& evt, double x, dou
   
 }
 
-void RagDollApp::applyCollisionForceFeedback( ){
-  //hduVector3Dd feedbackForce( 0.2, 0.5, 0 );
-  //hdSetDoublev( HD_CURRENT_FORCE, feedbackForce );
-}
-
-
 void RagDollApp::
 updateSimulation( const Ogre::Real& timeoffset )
 {
@@ -968,14 +970,10 @@ updateSimulation( const Ogre::Real& timeoffset )
 
 void RagDollApp::
 updateCatheterPosition( ) {
-  //pos before
-  double befx;
-  double befy;
-  double befz;
 
 
   const unsigned int movementScale = 40;
-  const unsigned int movementTranslate = 7;
+  const unsigned int movementTranslate = 10;
 	double movx = (movementScale * this->dx)+movementTranslate;
 	double movy = (movementScale * this->dy)+movementTranslate;
 	double movz = (movementScale * this->dz)+movementTranslate;
@@ -989,8 +987,25 @@ updateCatheterPosition( ) {
   catheterNode->setPosition( movx, movy, movz );
   Ogre::Vector3 vpos = Ogre::Vector3(movx,movy,movz);
   Ogre::Vector3 transObject = vpos-befpos;
-  
-  this->updatePositionBullet(transObject,catheterNode); //pendiente verificar esto
+  this->updatePositionBullet(transObject,catheterNode); //sincronizacion
+  if(this->isCollisionDetectedBetweenExistingNodes()){
+    this->applyCollisionForceFeedback();
+  }
+}
+
+bool RagDollApp::
+isCollisionDetectedBetweenExistingNodes( ){
+
+  Ogre::SceneNode* catheterNode = this->m_SceneMgr->getSceneNode("tool_node");
+  Ogre::SceneNode* vesselNode = this->m_SceneMgr->getSceneNode("piel_node");
+  //return ( this->isCollisionDetected( catheterNode, vesselNode ) );
+  return true;
+}
+
+void RagDollApp::
+applyCollisionForceFeedback( ){
+  hduVector3Dd feedbackForce( 0.2, 0.5, 0 );
+  //hdSetDoublev( HD_CURRENT_FORCE, feedbackForce );
 }
 
 // eof - $RCSfile$

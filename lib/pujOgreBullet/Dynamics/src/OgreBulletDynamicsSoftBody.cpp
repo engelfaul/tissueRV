@@ -428,8 +428,10 @@ namespace OgreBulletDynamics
     }
 
     void SoftBody::UpdateMesh(){
+           
+           
            /*
-           std::cout << "\n----- Actualizando objeto fisico!!! ------" << std::endl;
+           std::cout << "\n----- Actualizando objeto fisico!!! j ------"<< std::endl;
            std::cout << "nombre del nodo:  "<< this->mShapeNode->getName() << "\n" << std::endl;
            std::cout << "nombre de la entidad:  "<< this->mEntity->getName() << "\n" << std::endl;
            */       
@@ -479,7 +481,7 @@ namespace OgreBulletDynamics
                     for (unsigned int j = 0; j < vertexCount; j++)
                         {
                                 
-                            
+                             
                             posElem->baseVertexPointerToElement(pVert , &pReal);
                             pVert += vSize;
 
@@ -487,12 +489,10 @@ namespace OgreBulletDynamics
                                 (*(pReal++)) = npoints[indexBulletNodes[j]].y;    
                                 (*(pReal++)) = npoints[indexBulletNodes[j]].z;
 
-                                if(j==99){
-                                    //std::cout << "vertex de prueba: " << npoints[indexBulletNodes[j]].x << " " << npoints[indexBulletNodes[j]].y  << " " <<npoints[indexBulletNodes[j]].z <<std::endl;
-                                }
+                               
                         }
                     
-                    
+                   
                     vbuf->unlock();
    ///////////////////////////////////Actualizando indices    
                     //VertexIndexToShape::addIndexData(sub_mesh->indexData, mVertexCount);
@@ -702,7 +702,6 @@ namespace OgreBulletDynamics
 
             //actualizar la animacion en bullet
             //(myWorld->getWorldInfo()
-            std::cout << "recuperando world info: " << static_cast<btSoftBody*>(mObject)->m_worldInfo->air_density <<std::endl;
             static_cast<btSoftBody*>(mObject)->m_worldInfo->m_sparsesdf.Reset();
             
     }    

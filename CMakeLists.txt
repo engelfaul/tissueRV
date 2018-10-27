@@ -68,6 +68,34 @@ find_library(
   NAMES OIS
   )
 
+## == Find OpenHaptics
+FIND_PATH(
+  HD_INCLUDE_DIR
+  hd.h
+  /usr/include/HD
+  )
+
+FIND_LIBRARY(
+  HD_LIBRARY
+  NAMES
+  hd
+  PATHS
+  /usr/include/HD
+)
+
+FIND_PATH(
+  HDU_INCLUDE_DIR
+  hdu.h
+  /usr/include/HDU
+  )
+
+FIND_LIBRARY(
+  HDU_LIBRARY
+  NAMES
+  hdu
+  PATHS
+  /usr/include/HDU
+)
 ## == Build
 subdirs(lib src)
 
