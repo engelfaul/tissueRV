@@ -998,8 +998,8 @@ isCollisionDetectedBetweenExistingNodes( ){
 
   Ogre::SceneNode* catheterNode = this->m_SceneMgr->getSceneNode("tool_node");
   Ogre::SceneNode* vesselNode = this->m_SceneMgr->getSceneNode("piel_node");
-  //return ( this->isCollisionDetected( catheterNode, vesselNode ) );
-  return true;
+  return ( this->isCollisionDetected( catheterNode, vesselNode ) );
+  //return true;
 }
 
 void RagDollApp::

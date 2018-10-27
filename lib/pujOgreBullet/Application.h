@@ -3,8 +3,7 @@
 
 #include <pujOgre/Application.h>
 #include <OgreAxisAlignedBox.h>
-//#include <btCollisionWorld.h>
-
+#include "OgreBulletCollisionsPreRequisites.h"
 
 namespace OgreBulletDynamics
 {
@@ -140,7 +139,7 @@ namespace pujOgreBullet
 
   public:
     OgreBulletDynamics::DynamicsWorld* m_BulletWorld;
-  //  btCollisionWorld* m_collisionsWorld;
+    btCollisionWorld* m_collisionsWorld;
 
   };
 
