@@ -52,6 +52,8 @@
         "unordered_set": "cpp",
         "memory": "cpp",
         "iomanip": "cpp",
-        "*.txx": "cpp"
+        "*.txx": "cpp",
+        "csignal": "cpp",
+        "complex": "cpp"
     }
 }
