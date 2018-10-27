@@ -290,9 +290,11 @@ updatePositionBullet(
 bool pujOgreBullet::Application::
 isCollisionDetected( Ogre::SceneNode* node1, Ogre::SceneNode* node2 ){
     
-    /*
+    
     this->m_collisionsWorld =
-          this->m_dynamicsWorld->getBulletCollisionWorld( );
+          this->m_BulletWorld->getBulletCollisionWorld( );
+      
+     
       unsigned int amountOfManifolds = 
           this->m_collisionsWorld->getDispatcher( )->getNumManifolds( );
       
@@ -302,11 +304,11 @@ isCollisionDetected( Ogre::SceneNode* node1, Ogre::SceneNode* node2 ){
           const btCollisionObject* objectA = contactManifold->getBody0( );
           const btCollisionObject* objectB = contactManifold->getBody1( );
           
-          OgreBulletCollisions::Object *object_obj1 = this->m_dynamicsWorld->findObject( node1 );
-          OgreBulletCollisions::Object *object_obj2 = this->m_dynamicsWorld->findObject( node2 );
+          OgreBulletCollisions::Object *object_obj1 = this->m_BulletWorld->findObject( node1 );
+          OgreBulletCollisions::Object *object_obj2 = this->m_BulletWorld->findObject( node2 );
           
-          OgreBulletCollisions::Object *object_objA = this->m_dynamicsWorld->findObject( objectA );
-          OgreBulletCollisions::Object *object_objB = this->m_dynamicsWorld->findObject( objectB );
+          OgreBulletCollisions::Object *object_objA = this->m_BulletWorld->findObject( objectA );
+          OgreBulletCollisions::Object *object_objB = this->m_BulletWorld->findObject( objectB );
 
           if ( ( object_objA == object_obj1 ) && ( object_objB == object_obj2 ) ) {
               delete object_objA; delete object_objB;
@@ -318,7 +320,7 @@ isCollisionDetected( Ogre::SceneNode* node1, Ogre::SceneNode* node2 ){
               return false;
           }
       }
-      */
+      
     return true; 
 }
 
