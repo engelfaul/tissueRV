@@ -129,14 +129,14 @@ namespace OgreBulletDynamics
                                                                 );
         */
         const btScalar s=4; //size of cloth patch
-		const int NUM_X=10; //vertices on X axis
-		const int NUM_Z=10; //vertices on Z axis
+		const int NUM_X=20; //vertices on X axis
+		const int NUM_Z=20; //vertices on Z axis
         int posy= node->getPosition().y;                                                   
         btSoftBody *body = btSoftBodyHelpers::CreatePatch(myWorld->getWorldInfo(),
 		                                            btVector3(0,10,0),
-		                                            btVector3(9,10,0),
-		                                            btVector3(0,10,9),
-		                                            btVector3(9,10,9),
+		                                            btVector3(19,10,0),
+		                                            btVector3(0,10,19),
+		                                            btVector3(19,10,19),
 		                                            NUM_X,NUM_Z, 
 		                                            1+2+4+8,true);
         
@@ -148,7 +148,7 @@ namespace OgreBulletDynamics
         for (size_t i = 0; i < numNodes; i++) {
             btVector3 pos = body->m_nodes[i].m_x; 
             npoints.push_back(Ogre::Vector3(pos[0],pos[1],pos[2]));
-               std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               //std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
                
         }
         int numLinksTest = body->m_links.size();
@@ -234,19 +234,19 @@ namespace OgreBulletDynamics
                             
                             posElem->baseVertexPointerToElement(pVert , &pReal);
                             pVert += vSize;
-                            //el primer buffer es Z!
+                            
                             int vx =(*(pReal++));
                             int vy =(*(pReal++));
                             int vz =(*(pReal++));
-                            //std::cout << "bucando vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
+                            std::cout << "bucando vertex" << j <<": " << vx << " " << vy << " " << vz  <<std::endl;
                             
                             for (size_t i = 0; i < numNodes; i++) {
                                 btVector3 pos = body->m_nodes[i].m_x; 
-                              //  std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+                                std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
                                 if(vx == pos[0] && vy == pos[1] && vz == pos[2] ){
                                    //si encuentra un nodo igual al vertice sale del for
                                    indexBulletNodes[j] = i;        
-                                  // std::cout << "encontre nodo "<< i <<" vertice "<< j << "\n" << std::endl;
+                                   std::cout << "encontre nodo "<< i <<" vertice "<< j << "\n" << std::endl;
                                    break;         
                                 }
                             }
@@ -262,7 +262,7 @@ namespace OgreBulletDynamics
                     Ogre::IndexData *data2 = sub_mesh->indexData;
                     int numIndices = data2->indexCount;
                     int mIndexCount;
-                    std::cout << "index count: " <<numIndices <<std::endl;
+                 //   std::cout << "index count: " <<numIndices <<std::endl;
                     //VertexIndexToShape::addStaticVertexData(sub_mesh->vertexData);
                     
                         
@@ -344,15 +344,15 @@ namespace OgreBulletDynamics
                                     int vertexX3 = tempy3/10;
 
                              
-                               std::cout << "recuperando index del triangulo:  " << k <<": " << ix << " " << iy << " " << iz  <<std::endl; 
-                               std::cout << "vertex 0: " << vertexX1 <<" "<< vertexZ1 << std::endl;
-                               std::cout << "vertex 1: " << vertexX2 <<" "<< vertexZ2 << std::endl;
-                               std::cout << "vertex 2: " << vertexX3 <<" "<< vertexZ3 << std::endl;
+                             //  std::cout << "recuperando index del triangulo:  " << k <<": " << ix << " " << iy << " " << iz  <<std::endl; 
+                             //  std::cout << "vertex 0: " << vertexX1 <<" "<< vertexZ1 << std::endl;
+                             //  std::cout << "vertex 1: " << vertexX2 <<" "<< vertexZ2 << std::endl;
+                             //  std::cout << "vertex 2: " << vertexX3 <<" "<< vertexZ3 << std::endl;
                                
                                 //diccionario para tener relacion entre los triangulos de ogre y bullet
                                 
                                 ////////////Investigando informacion de los faces en bullet/////////////////////////////////////
-                                    std::cout << "detectando triangulos" << std::endl;
+                             //       std::cout << "detectando triangulos" << std::endl;
                                     int numFaces = body->m_faces.size();
                                     int numLinks = body->m_links.size();
 
@@ -362,10 +362,10 @@ namespace OgreBulletDynamics
                                         btVector3 pos2 = body->m_faces[i].m_n[2]->m_x; 
                                         
                                         if(int(pos[0])==vertexX1 && int(pos[2])==vertexZ1 && int(pos1[0])==vertexX2 && int(pos1[2])==vertexZ2 && int(pos2[0])==vertexX3 && int(pos2[2])==vertexZ3 ){
-                                            std::cout << "triangulos encontrado k: " << k<< " i "<< i <<std::endl;
-                                            std::cout << "triangulo: " << " i "<< i <<std::endl;
-                                            std::cout << "pos[0]: " << pos[0] << " pos[1]: " << pos[1] << "pos[2]: " << pos[2] <<std::endl;
-                                            std::cout << "pos1[0]: " << pos1[0] << " pos1[1]: " << pos1[1] << "pos1[2]: " << pos1[2] <<std::endl;
+                               //             std::cout << "triangulos encontrado k: " << k<< " i "<< i <<std::endl;
+                               //             std::cout << "triangulo: " << " i "<< i <<std::endl;
+                               //             std::cout << "pos[0]: " << pos[0] << " pos[1]: " << pos[1] << "pos[2]: " << pos[2] <<std::endl;
+                                //            std::cout << "pos1[0]: " << pos1[0] << " pos1[1]: " << pos1[1] << "pos1[2]: " << pos1[2] <<std::endl;
                                             indexBulletFaces[k] = i; //cambia el diccionario, se debe modificar y buscar la relacion entre triangulos al memento de cortar el triangulo
                                             break;    
                                         }
@@ -399,19 +399,35 @@ namespace OgreBulletDynamics
 
            std::cout << "numero de faces:  "<< numFaces <<std::endl;
            std::cout << "numero de links:  "<< numLinks <<std::endl;
+           
            indexBulletFaces = new int[numFaces];
+           
+           
            for (size_t i = 0; i < numFaces; i++) {
                btVector3 pos = body->m_faces[i].m_n[0]->m_x;
                btVector3 pos1 = body->m_faces[i].m_n[1]->m_x;
                btVector3 pos2 = body->m_faces[i].m_n[2]->m_x; 
         
-               std::cout << "Triangulo Bullet: "<< i << "\n" << std::endl;
-               std::cout << " nodo: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
-               std::cout << " nodo: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
-               std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
+          //     std::cout << "Triangulo Bullet: "<< i << "\n" << std::endl;
+          //     std::cout << " nodo: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+          //     std::cout << " nodo: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
+          //     std::cout << " nodo: 2 -> "<< pos2[0] << " " << pos2[1] << " "<< pos2[2]<< "\n" << std::endl;
 
                 
             }
+          
+          //Investigando links
+          /*
+          for(size_t i = 0; i< numLinks; i++){
+               std::cout << "Mostrando Link: "<< i << "\n" << std::endl;
+               btVector3 pos = body->m_links[i].m_n[0]->m_x;
+               btVector3 pos1 = body->m_links[i].m_n[1]->m_x;
+
+               std::cout << " Link: 0 -> "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+               std::cout << " Link: 1 -> "<< pos1[0] << " " << pos1[1] << " "<< pos1[2]<< "\n" << std::endl;
+
+          }*/
+
         ////////////////////////////////////////////////////////////////
         mObject = body;
 	    	    
@@ -419,11 +435,12 @@ namespace OgreBulletDynamics
         getDynamicsWorld()->addSoftBody(this, mCollisionGroup, mCollisionMask);
         //getSoftDynamicsWorld()->addSoftBody(cloth);
 
-        std::cout << "\n----- CONTEO ------" << std::endl;
-        std::cout << "Cantidad de Soft bodies: " << myWorld->getSoftBodyArray().size() << std::endl;
+        //std::cout << "\n----- CONTEO ------" << std::endl;
+        //std::cout << "Cantidad de Soft bodies: " << myWorld->getSoftBodyArray().size() << std::endl;
 
+        //pendiente revisar diccionario
         for(int z = 0; z<numFaces;z++){
-           std::cout << "diccionario bullet (i): " << z<< " Ogre (k): "<< indexBulletFaces[z] <<std::endl; 
+          // std::cout << "diccionario bullet (i): " << z<< " Ogre (k): "<< indexBulletFaces[z] <<std::endl; 
         }
     }
 
@@ -478,17 +495,22 @@ namespace OgreBulletDynamics
                     //    std::cout << "vertex count: " <<vertexCount <<std::endl;
                     
                     Ogre::Vector3 * curVertices = &mVertexBuffer[vertexCount];  
+                    std::cout << "probando  vertex count: " << vertexCount <<"\n" << std::endl;
                     for (unsigned int j = 0; j < vertexCount; j++)
                         {
-                                
-                             
+                                  
                             posElem->baseVertexPointerToElement(pVert , &pReal);
                             pVert += vSize;
 
-                                (*(pReal++)) = npoints[indexBulletNodes[j]].x;    
-                                (*(pReal++)) = npoints[indexBulletNodes[j]].y;    
-                                (*(pReal++)) = npoints[indexBulletNodes[j]].z;
+                               // (*(pReal++)) = npoints[indexBulletNodes[j]].x;    
+                                //(*(pReal++)) = npoints[indexBulletNodes[j]].y;    
+                                //(*(pReal++)) = npoints[indexBulletNodes[j]].z;
+                                (*(pReal++)) = npoints[j].x;    
+                                (*(pReal++)) = npoints[j].y;    
+                                (*(pReal++)) = npoints[j].z;
 
+                            //std::cout << "probando  vertex num: " << j << "indexBuleetNodes: "<< indexBulletNodes[j]  <<"\n" << std::endl; 
+                          
                                
                         }
                     
@@ -593,7 +615,36 @@ namespace OgreBulletDynamics
 
             std::cout << "CORTANDO TRIANGULO: " << cutnode << "!!!!!!"<<std::endl;
             int cutN = static_cast<int>(cutnode);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(indexBulletFaces[cutN] );
+           // static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(indexBulletFaces[cutN] );
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+1);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+2);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+3);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+4);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+5);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+6);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+7);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+8);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+9);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+10);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+11);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+12);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+13);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+14);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+15);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+16);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+17);
+           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+18);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+19);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+20);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+21);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+22);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+23);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+24);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+25);
+            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+26);
+           // static_cast<btSoftBody*>(mObject)->m_nodes.removeAtIndex(cutN);
+            
 
         
             numFaces = static_cast<btSoftBody*>(mObject)->m_faces.size();
@@ -613,7 +664,8 @@ namespace OgreBulletDynamics
            }*/
             //std::cout << "Recuperando entidad para cortarla : "<< this->mEntity->getName() << "\n" << std::endl;
 
-
+//actualzando indices en ogre
+        /*
             for (unsigned int i = 0; i < this->mEntity->getNumSubEntities(); ++i){
                Ogre::SubMesh *sub_mesh = this->mEntity->getSubEntity(i)->getSubMesh();
                 Ogre::VertexData *data = sub_mesh->vertexData;
@@ -634,13 +686,7 @@ namespace OgreBulletDynamics
                       //  std::cout << "prev_size: " <<prev_size <<std::endl;
                         unsigned int *tmp_ind = new unsigned int[mIndexCount];
                         unsigned int  *mIndexBuffer;
-                     /*
-                        if (mIndexBuffer)
-                        {
-                            memcpy (tmp_ind, mIndexBuffer, sizeof(unsigned int) * prev_size);
-                            delete[] mIndexBuffer;
-                        }
-                     */   
+                  
                         mIndexBuffer = tmp_ind;
                         
                         const unsigned int numTris = (unsigned int) data2->indexCount / 3;
@@ -655,16 +701,7 @@ namespace OgreBulletDynamics
                         if (use32bitindexes) 
                         {
                             std::cout << "entre al if " <<std::endl;
-                            /* //Aqui voy
-                            const unsigned int *pInt = static_cast<unsigned int*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-                            for (unsigned int k = 0; k < numTris; ++k)
-                            {
-                                mIndexBuffer[index_offset ++] = offset + *pInt++;
-                                mIndexBuffer[index_offset ++] = offset + *pInt++;
-                                mIndexBuffer[index_offset ++] = offset + *pInt++;
-                            }
-                            ibuf->unlock();
-                            */
+       
                         }
                         else 
                         {
@@ -699,7 +736,7 @@ namespace OgreBulletDynamics
                         }
             
             }
-
+            */
             //actualizar la animacion en bullet
             //(myWorld->getWorldInfo()
             static_cast<btSoftBody*>(mObject)->m_worldInfo->m_sparsesdf.Reset();
