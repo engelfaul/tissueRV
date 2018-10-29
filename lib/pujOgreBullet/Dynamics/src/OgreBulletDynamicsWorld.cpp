@@ -163,12 +163,12 @@ namespace OgreBulletDynamics
         //this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
         
         for (size_t i = 0; i < numSoft; i++) {
-            /*
+            
           if(stepTime == 54 ){
             static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime);
             //static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(stepTime+1);    
           } 
-               
+            /*   
           if (stepTime == 64){
               static_cast<SoftBody*>(mSoftObjects[i])->UpdateCut(55);
           }

@@ -185,13 +185,13 @@ createScene( )
 Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
 man->begin("Mat", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-int numeroVertices = 10;
-int largo = 10;
-double resx = numeroVertices/largo;
+int numeroVertices = 20;
+//int largo = 10;
+//double resx = numeroVertices/largo;
 for(int n=0; n<numeroVertices;n++){
      for(int m=0; m<numeroVertices;m++){
        std::cout << "vertice:  "<< m << " "<< n << "\n" << std::endl;
-        man->position(resx*m, 10, resx*n);
+        man->position(m, 10, n);
         man->normal(0, 1, 0);
      } 
   }
@@ -274,22 +274,6 @@ for(int n=0; n<numeroVertices;n++){
   ninja_node->attachObject( ninja );
   ninja_node->translate(5,10,5);
   
-  
-  //////////Objeto de prueba
-    // Load model entity
-  Ogre::Entity* ship =
-    this->m_SceneMgr->createEntity(
-      "ship", "Sphere.mesh"
-      );
-  ship->setCastShadows( true );
-  Ogre::AxisAlignedBox bbox2 = ship->getBoundingBox( );
-
-  // Associate it to a node
-  Ogre::SceneNode* ship_node =
-    this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
-      "ship_node"
-      );
-  ship_node->attachObject( ship );
 
   /* el objeto cargado de blender no se deja actualizar por el objeto de bullet debido a que viene por defecto con el parametro de sharevertex en true y debe ser false
   //////////Objeto piel
@@ -327,7 +311,7 @@ for(int n=0; n<numeroVertices;n++){
     // Load model entity
   Ogre::Entity* tool =
     this->m_SceneMgr->createEntity(
-      "tool", "tool2.mesh"
+      "tool", "tool.mesh"
       );
   tool->setCastShadows( true );
   Ogre::AxisAlignedBox bbox4 = tool->getBoundingBox( );
@@ -349,7 +333,8 @@ for(int n=0; n<numeroVertices;n++){
   qTool.normalise( );
     // Associate ninja to the physical world
   //addPhysicsCylinder addPhysicsConvex  addPhysicsSphere addRigidPhysicsTrimesh
-  this->addPhysicsSphere(
+  
+  this->addPhysicsCylinder(
     tool, tool_node, "tool_physics", 0.0009, 0.0009, 0,
     Ogre::Vector3( 0, 0, 0 ),
     qTool
@@ -397,8 +382,8 @@ void RagDollApp::
 createCamera( )
 {
   this->Superclass::createCamera( );
-  this->m_Camera->setPosition( Ogre::Vector3( 0, 25, 25 ) );
-  this->m_Camera->lookAt( Ogre::Vector3( 0, 10, 0 ) );
+  this->m_Camera->setPosition( Ogre::Vector3( 10, 30, 40 ) );
+  this->m_Camera->lookAt( Ogre::Vector3( 10, 10, 0 ) );
   this->m_Camera->setNearClipDistance( 5 );
 }
 
