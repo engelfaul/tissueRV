@@ -272,13 +272,7 @@ namespace OgreBulletDynamics
                         std::cout << "prev_size: " <<prev_size <<std::endl;
                         unsigned int *tmp_ind = new unsigned int[mIndexCount];
                         unsigned int  *mIndexBuffer;
-                     /*
-                        if (mIndexBuffer)
-                        {
-                            memcpy (tmp_ind, mIndexBuffer, sizeof(unsigned int) * prev_size);
-                            delete[] mIndexBuffer;
-                        }
-                     */   
+                 
                         mIndexBuffer = tmp_ind;
                         
                         const unsigned int numTris = (unsigned int) data2->indexCount / 3;
@@ -495,7 +489,7 @@ namespace OgreBulletDynamics
                     //    std::cout << "vertex count: " <<vertexCount <<std::endl;
                     
                     Ogre::Vector3 * curVertices = &mVertexBuffer[vertexCount];  
-                    std::cout << "probando  vertex count: " << vertexCount <<"\n" << std::endl;
+                   // std::cout << "probando  vertex count: " << vertexCount <<"\n" << std::endl;
                     for (unsigned int j = 0; j < vertexCount; j++)
                         {
                                   
@@ -616,37 +610,18 @@ namespace OgreBulletDynamics
             std::cout << "CORTANDO TRIANGULO: " << cutnode << "!!!!!!"<<std::endl;
             int cutN = static_cast<int>(cutnode);
            // static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(indexBulletFaces[cutN] );
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+1);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+2);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+3);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+4);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+5);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+6);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+7);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+8);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+9);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+10);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+11);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+12);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+13);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+14);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+15);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+16);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+17);
-           static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+18);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+19);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+20);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+21);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+22);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+23);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+24);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+25);
-            static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN+26);
-           // static_cast<btSoftBody*>(mObject)->m_nodes.removeAtIndex(cutN);
-            
+           //static_cast<btSoftBody*>(mObject)->m_faces.removeAtIndex(cutN);
 
-        
+            /*
+              for(int i = 0;i<numLinks;i++){
+                  static_cast<btSoftBody*>(mObject)->m_links.removeAtIndex(i);
+              }
+            */          
+            //static_cast<btSoftBody*>(mObject)->m_nodes.removeAtIndex(cutN);
+            
+            //btSoftBodySolver * bsolver = new btSoftBodySolver::btSoftBodySolver();
+            //bsolver->updateSoftBodies();
+            //btSoftBodySolver::updateSoftBodies();
             numFaces = static_cast<btSoftBody*>(mObject)->m_faces.size();
            // std::cout << "nuevo size: " << numFaces <<std::endl;
             /* For para vericar que se quito un trinagulo

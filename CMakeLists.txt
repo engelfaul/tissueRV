@@ -69,34 +69,91 @@ find_library(
   )
 
 ## == Find OpenHaptics
-FIND_PATH(
-  HD_INCLUDE_DIR
-  hd.h
-  /usr/include/HD
-  )
+###
+# HDAPI: HD
+###
 
-FIND_LIBRARY(
-  HD_LIBRARY
-  NAMES
-  hd
-  PATHS
-  /usr/include/HD
+find_path(HDAPI_INCLUDE_DIR
+	NAMES
+	HD/hd.h
+	HINTS
+${_incsearchdirs})
+
+find_library(HDAPI_LIBRARY
+	NAMES
+	HD
+	PATHS
+	/usr/lib
 )
 
-FIND_PATH(
-  HDU_INCLUDE_DIR
-  hdu.h
-  /usr/include/HDU
-  )
+###
+# HDAPI: HDU
+###
 
-FIND_LIBRARY(
-  HDU_LIBRARY
-  NAMES
-  hdu
-  PATHS
-  /usr/include/HDU
-)
+find_path(HDAPI_HDU_INCLUDE_DIR
+	NAMES
+	HDU/hdu.h
+	HINTS
+	${_incsearchdirs})
+
+find_library(HDAPI_HDU_LIBRARY_RELEASE
+	NAMES
+	HDU
+	PATH_SUFFIXES
+	ReleaseAcademicEdition
+	Release
+	HINTS
+${_libsearchdirs})
 ## == Build
 subdirs(lib src)
+
+###
+# HLAPI: HL
+###
+find_path(HLAPI_INCLUDE_DIR
+	NAMES
+	HL/hl.h
+	HINTS
+	${_incsearchdirs})
+
+find_library(HLAPI_LIBRARY_RELEASE
+	NAMES
+	HL
+	PATH_SUFFIXES
+	ReleaseAcademicEdition
+	Release
+	HINTS
+${_libsearchdirs})
+
+###
+# HLAPI: HLU
+###
+find_path(HLAPI_HLU_INCLUDE_DIR
+	NAMES
+	HLU/hlu.h
+	HINTS
+	${_incsearchdirs})
+
+find_library(HLAPI_HLU_LIBRARY_RELEASE
+	NAMES
+	HLU
+	PATH_SUFFIXES
+	ReleaseAcademicEdition
+	Release
+	HINTS
+	${_libsearchdirs})
+
+
+find_path(HLAPI_HLU_SOURCE_DIR
+		NAMES
+		hlu.cpp
+		PATH_SUFFIXES
+		src
+		src/HLU
+		src/HLU/src
+		libsrc/HLU
+		HINTS
+		"${HLAPI_HLU_INCLUDE_DIR}/.."
+"${HLAPI_HLU_INCLUDE_DIR}/../share/3DTouch")
 
 ## eof - $RCSfile$

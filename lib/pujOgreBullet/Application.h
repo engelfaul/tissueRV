@@ -101,6 +101,7 @@ namespace pujOgreBullet
       const Ogre::Vector3& position = Ogre::Vector3::ZERO,
       const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY
       );
+      
 
     void addRigidPhysicsTrimesh(
       Ogre::Entity* entity,
