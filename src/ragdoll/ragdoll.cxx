@@ -25,6 +25,7 @@
 
 //libreias openhaptics  :O
 #include <HD/hd.h>
+//#include <HD/hdDevice.h>
 #include <HDU/hduVector.h>
 
 
@@ -134,7 +135,6 @@ createScene( )
   this->Superclass::createScene( );
 
 
-
  // Create a plane
   Ogre::Plane plane( Ogre::Vector3::UNIT_Y, 0 );
   Ogre::MeshManager::getSingleton( ).
@@ -166,20 +166,7 @@ createScene( )
   thisSceneNode2->setPosition(0, 5, 0);
   thisSceneNode2->attachObject(thisEntity2);
   //std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
-
-//Agregar el objeto blando al mundo fisico
-  Ogre::Quaternion qsoft1( 1, 1, 1, 1 );
-  qsoft1.normalise( );
-  this->addSoftPhysicsTrimesh(
-    thisEntity2, thisSceneNode2, "soft_physics2", 0.0009, 0.0009, 10,
-    Ogre::Vector3( 0, 5, 0 ),
-    qsoft1
-    );
- */
-   ///prueba clase tipo suave
-   //std::shared_ptr<SceneSoftObject> softObject(new SceneSoftObject(thisEntity));
-  //SceneSoftObject* so = new SceneSoftObject(thisEntity);
-  //softObject->InitSoftBody(this->m_BulletWorld->softBodyWorldInfo)
+*/
 
 //prueba clase manual object
 Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
@@ -204,8 +191,6 @@ for(int n=0; n<numeroVertices;n++){
     for(int o=0;o<(totalVertices-numeroVertices);o+=numeroVertices){
       for(int p=0;p<numeroVertices-1;p++){
         //se ajusta la forma en que se arman los triangulos para que queden igual como los arma bullet
-        //man->triangle(o+p,o+numeroVertices+p,o+numeroVertices+p+1);
-        //man->triangle(o+numeroVertices+p+1,o+1+p,o+p);
         if((o+p)&1){
           man->triangle(o+p,o+numeroVertices+p,o+numeroVertices+p+1);
           man->triangle(o+p,o+numeroVertices+p+1,o+1+p); 
@@ -258,6 +243,7 @@ for(int n=0; n<numeroVertices;n++){
 
  
 // -------------------------------------------------------
+/* 
   // Load model entity
   Ogre::Entity* ninja =
     this->m_SceneMgr->createEntity(
@@ -273,7 +259,7 @@ for(int n=0; n<numeroVertices;n++){
       );
   ninja_node->attachObject( ninja );
   ninja_node->translate(5,10,5);
-  
+  */
 
   /* el objeto cargado de blender no se deja actualizar por el objeto de bullet debido a que viene por defecto con el parametro de sharevertex en true y debe ser false
   //////////Objeto piel
@@ -311,8 +297,9 @@ for(int n=0; n<numeroVertices;n++){
     // Load model entity
   Ogre::Entity* tool =
     this->m_SceneMgr->createEntity(
-      "tool", "tool.mesh"
+      "tool", "tool2.mesh"
       );
+  tool->setMaterialName( "Mat3" );    
   tool->setCastShadows( true );
   Ogre::AxisAlignedBox bbox4 = tool->getBoundingBox( );
   
@@ -334,16 +321,14 @@ for(int n=0; n<numeroVertices;n++){
     // Associate ninja to the physical world
   //addPhysicsCylinder addPhysicsConvex  addPhysicsSphere addRigidPhysicsTrimesh
   
-  this->addPhysicsCylinder(
+  this->addPhysicsSphere(
     tool, tool_node, "tool_physics", 0.0009, 0.0009, 0,
     Ogre::Vector3( 0, 0, 0 ),
     qTool
     );
 
-
-//  this->addPhysicsPlane( plane, "plane_physics", 0.000001, 0.00001 );
 /////////////////////////////////////////////////////////////////////////////////////
-
+/*
   // Associate ninja to the physical world
   Ogre::Quaternion q( 1, 1, 2, 3 );
   q.normalise( );
@@ -352,6 +337,8 @@ for(int n=0; n<numeroVertices;n++){
     Ogre::Vector3( -10, 5, -10 ),
     q
     );
+
+  */  
 //addRigidPhysicsTrimesh
 //addPhysicsConvex
 
@@ -680,67 +667,6 @@ void RagDollApp::createColourCube()
     /// Create one submesh
     Ogre::SubMesh* sub = msh->createSubMesh();
 
-    //const float sqrt13 = 0.577350269f; /* sqrt(1/3) */
-
-    /// Define the vertices (16 vertices, each have 3 floats for position and 3 for normal)
-    //const size_t nVertices = 16;
-    //const size_t vbufCount = 3*2*nVertices;
-    //float verts[vbufCount] = {
-    /*
-     float  verts[]   = {  
-            0.0,0.0,0.0,                //0 position
-            -sqrt13,sqrt13,-sqrt13,     //0 normal
-            2.0,0.0,0.0,                //1 position
-            sqrt13,sqrt13,-sqrt13,      //1 normal
-            4.0,0.0,0.0,                //2 position
-            sqrt13,-sqrt13,-sqrt13,     //2 normal
-            6.0,0.0,0.0,                //3 position
-            -sqrt13,-sqrt13,-sqrt13,    //3 normal
-            0.0,0.0,2.0,                //4 position
-            -sqrt13,sqrt13,sqrt13,      //4 normal
-            2.0,0.0,2.0,                //5 position
-            sqrt13,sqrt13,sqrt13,       //5 normal
-            4.0,0.0,2.0,                //6 position
-            sqrt13,-sqrt13,sqrt13,      //6 normal
-            6.0,0.0,2.0,                //7 position
-            -sqrt13,-sqrt13,sqrt13,     //7 normal
-            0.0,0.0,4.0,                //8 position
-            -sqrt13,sqrt13,-sqrt13,     //8 normal
-            2.0,0.0,4.0,                //9 position
-            sqrt13,sqrt13,-sqrt13,      //9 normal
-            4.0,0.0,4.0,                //10 position
-            sqrt13,-sqrt13,-sqrt13,     //10 normal
-            6.0,0.0,4.0,                //11 position
-            -sqrt13,-sqrt13,-sqrt13,    //11 normal
-            0.0,0.0,6.0,                //12 position
-            -sqrt13,sqrt13,sqrt13,      //12 normal
-            2.0,0.0,6.0,                //13 position
-            sqrt13,sqrt13,sqrt13,       //13 normal
-            4.0,0.0,6.0,                //14 position
-            sqrt13,-sqrt13,sqrt13,      //14 normal
-            6.0,0.0,6.0,                //15 position
-            -sqrt13,-sqrt13,sqrt13,     //15 normal
-          };
-    */
-   //cube mesh 
-  //  float vertices[vbufCount] = {
-  //          -10.0,10.0,-10.0,        //0 position
-  //          -sqrt13,sqrt13,-sqrt13,     //0 normal
-  //          10.0,10.0,-10.0,         //1 position
-  //          sqrt13,sqrt13,-sqrt13,      //1 normal
-  //          10.0,-10.0,-10.0,        //2 position
-  //          sqrt13,-sqrt13,-sqrt13,     //2 normal
-  //          -10.0,-10.0,-10.0,       //3 position
-  //          -sqrt13,-sqrt13,-sqrt13,    //3 normal
-  //          -10.0,10.0,10.0,         //4 position
-  //          -sqrt13,sqrt13,sqrt13,      //4 normal
-  //          10.0,10.0,10.0,          //5 position
-  //          sqrt13,sqrt13,sqrt13,       //5 normal
-  //          10.0,-10.0,10.0,         //6 position
-  //          sqrt13,-sqrt13,sqrt13,      //6 normal
-  //          -10.0,-10.0,10.0,        //7 position
-  //          -sqrt13,-sqrt13,sqrt13,     //7 normal
-  //  };
 
     
     Ogre::RenderSystem* rs = this->m_Root->getSingleton().getRenderSystem();
@@ -757,31 +683,6 @@ void RagDollApp::createColourCube()
     rs->convertColourValue(Ogre::ColourValue(0.0,1.0,1.0), pColour++); //6 colour
     rs->convertColourValue(Ogre::ColourValue(0.0,0.0,1.0), pColour++); //7 colour
 
-    /// Define 12 triangles (two triangles per cube face)
-    /// The values in this table refer to vertices in the above table
-    /*
-    const size_t ibufCount = 54;
-    unsigned short faces[ibufCount] = {
-            0,4,5,
-            0,5,1,
-            1,5,2,
-            2,5,6,
-            2,6,7,
-            2,7,3,
-            4,8,5,
-            5,8,9,
-            5,9,10,
-            5,10,6,
-            6,10,7,
-            7,10,11,
-            8,12,13,
-            8,13,9,
-            9,13,10,
-            13,14,10,
-            15,10,14,
-            10,15,11
-    };
-    */
     /// Create vertex data structure for 8 vertices shared between submeshes
     msh->sharedVertexData = new Ogre::VertexData();
     msh->sharedVertexData->vertexCount = nVertices;
@@ -909,8 +810,12 @@ frameRenderingQueued( const Ogre::FrameEvent& evt )
   if( this->m_Devices[ 0 ] != NULL ) {
     VRPN_PhantomOmni* phantom = dynamic_cast< VRPN_PhantomOmni* >( this->m_Devices[ 0 ] );
     VRPN_PhantomOmni_State phantom_state = phantom->capture( );
-    //pendiente crear funcion de actualizar pos herramienta
+    //std::cout << "actualizando !!! " <<std::endl;
+      //hduVector3Dd feedbackForce(5 , 5, 5 );
+   hduVector3Dd (40,40.0,17.0);
     this->updateToolPosition( evt, phantom_state.Position[0], phantom_state.Position[1], phantom_state.Position[2] );
+
+      
   }
 
   std::chrono::duration<double> deltaTime; 
@@ -935,12 +840,15 @@ void RagDollApp::updateToolPosition ( const Ogre::FrameEvent& evt, double x, dou
   this->dx = x; this->dy = y; this->dz = z;
   //std::cout <<"Loop: " << deltaTime.count() <<"\n";
   
-  /*
-  if( this->m_View->isCollisionDetectedBetweenExistingNodes( ) ){
+
+  if(this->isCollisionDetectedBetweenExistingNodes()){
     this->applyCollisionForceFeedback();
+  }else {
+    std::cout <<"Sin fuerza " <<"\n";
+
   }
-  */
   Ogre::Real timeoffset = evt.timeSinceLastFrame;
+ 
   this->updateSimulation( timeoffset );
   
 }
@@ -957,7 +865,7 @@ void RagDollApp::
 updateCatheterPosition( ) {
 
 
-  const unsigned int movementScale = 40;
+  const unsigned int movementScale = 70;
   const unsigned int movementTranslate = 10;
 	double movx = (movementScale * this->dx)+movementTranslate;
 	double movy = (movementScale * this->dy)+movementTranslate;
@@ -968,14 +876,11 @@ updateCatheterPosition( ) {
   
   Ogre::Vector3 befpos = catheterNode->getPosition();
   
-  //catheterNode->translate( movx, movy, movz );
   catheterNode->setPosition( movx, movy, movz );
   Ogre::Vector3 vpos = Ogre::Vector3(movx,movy,movz);
   Ogre::Vector3 transObject = vpos-befpos;
   this->updatePositionBullet(transObject,catheterNode); //sincronizacion
-  if(this->isCollisionDetectedBetweenExistingNodes()){
-    this->applyCollisionForceFeedback();
-  }
+ 
 }
 
 bool RagDollApp::
@@ -989,8 +894,14 @@ isCollisionDetectedBetweenExistingNodes( ){
 
 void RagDollApp::
 applyCollisionForceFeedback( ){
-  hduVector3Dd feedbackForce( 0.2, 0.5, 0 );
-  //hdSetDoublev( HD_CURRENT_FORCE, feedbackForce );
+  //retroalimentacion
+  std::cout <<"Devolviendo fuerza: " <<"\n";
+  hduVector3Dd feedbackForce(0.2,0.5,0);
+  std::cout <<"HD_CURRENT_FORCE: " <<HD_CURRENT_FORCE<<"\n";
+  //hdSetDoublev ( HD_CURRENT_FORCE, feedbackForce );
+  HDdouble baseTorque[3] = {100, 250, 200}; //Base Torque in mNm
+  //hdSetDoublev(HD_CURRENT_GIMBAL_TORQUE, baseTorque  );
+
 }
 
 // eof - $RCSfile$

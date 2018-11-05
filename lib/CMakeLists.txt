@@ -22,6 +22,6 @@ add_library(pujOgre SHARED ${_ogre_lib_src})
 target_link_libraries(pujOgre ${OGRE_LIBRARIES} ${OIS_LIBRARIES})
 
 add_library(pujOgreBullet SHARED ${_ob_lib_src})
-target_link_libraries(pujOgreBullet pujOgre ${BULLET_LIBRARIES} ConvexDecomposition)
+target_link_libraries(pujOgreBullet pujOgre ${BULLET_LIBRARIES} ConvexDecomposition ${HDAPI_LIBRARY} PHANToMIO raw1394)
 
 ## eof - $RCSfile$
