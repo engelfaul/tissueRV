@@ -242,7 +242,7 @@ namespace OgreBulletDynamics
                             
                             for (size_t i = 0; i < numNodes; i++) {
                                 btVector3 pos = body->m_nodes[i].m_x; 
-                                std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
+                                //std::cout << "nodo "<< i <<": "<< pos[0] << " " << pos[1] << " "<< pos[2]<< "\n" << std::endl;
                                 if(vx == pos[0] && vy == pos[1] && vz == pos[2] ){
                                    //si encuentra un nodo igual al vertice sale del for
                                    indexBulletNodes[j] = i;        
