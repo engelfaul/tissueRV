@@ -42,6 +42,7 @@ public:
 public:
   RagDollApp( );
   virtual ~RagDollApp( );
+  HHD hHD;
   Ogre::Vector3 direccion;
   Ogre::Vector3 posTool;
   typedef std::vector< VRPN_Device* > TDevices; 
@@ -156,17 +157,6 @@ createScene( )
 
 
  
-   ///Prueba generacion manual de un mesh /////comentariado para probar el manualobject
-  /*
-  createColourCube(); 
-  Ogre::Entity* thisEntity2 = this->m_SceneMgr->createEntity("pielEnity2", "ColourCube");
-  thisEntity2->setMaterialName("Mat");
-  Ogre::AxisAlignedBox bboxSoft2 = thisEntity2->getBoundingBox( );
-  Ogre::SceneNode* thisSceneNode2 = this->m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-  thisSceneNode2->setPosition(0, 5, 0);
-  thisSceneNode2->attachObject(thisEntity2);
-  //std::cout << "nombre de la entidad:  "<< thisEntity->getName() << "\n" << std::endl;
-*/
 
 //prueba clase manual object
 Ogre::ManualObject* man = this->m_SceneMgr->createManualObject("test");
@@ -329,6 +319,40 @@ for(int n=0; n<numeroVertices;n++){
 
 /////////////////////////////////////////////////////////////////////////////////////
 /*
+  ////////////////////////////Objeto de prueba/////////////////////////////////////
+    // Load model entity
+  Ogre::Entity* pruebaEntity =
+    this->m_SceneMgr->createEntity(
+      "pruebaEntity", "Sphere.mesh"
+      );
+  pruebaEntity->setMaterialName( "Mat3" );    
+  pruebaEntity->setCastShadows( true );
+  Ogre::AxisAlignedBox bbox5 = pruebaEntity->getBoundingBox( );
+  
+  // Associate it to a node
+  Ogre::SceneNode* test_node =
+    this->m_SceneMgr->getRootSceneNode( )->createChildSceneNode(
+      "test_node"
+      );
+  test_node->attachObject( pruebaEntity );
+  //tool_node->scale(2,2,2);
+  test_node->translate(8,30,8);
+
+// Associate tool to the physical world
+  Ogre::Quaternion qTest( 5, 1, 1, 1 );
+  qTest.normalise( );
+    // Associate ninja to the physical world
+  //addPhysicsCylinder addPhysicsConvex  addPhysicsSphere addRigidPhysicsTrimesh
+  
+  this->addPhysicsSphere(
+    pruebaEntity, test_node, "test_physics", 1, 1, 20,
+    Ogre::Vector3( 8, 30, 8 ),
+    qTest
+    );
+*/
+/////////////////////////////////////////////////////////////////////////////////////
+
+/*
   // Associate ninja to the physical world
   Ogre::Quaternion q( 1, 1, 2, 3 );
   q.normalise( );
@@ -339,15 +363,6 @@ for(int n=0; n<numeroVertices;n++){
     );
 
   */  
-//addRigidPhysicsTrimesh
-//addPhysicsConvex
-
- //indi = new int[ibufCount/3];//probando
-
-  for(short i=0 ; i<(ibufCount/3) ; i++){
-    indi[i]= 1;
-  }
-
 
   //conectando phantom
   //creando phantom, OJO: correr el archivo vrpn_server de la maquina del servidor de  VRPN/vrpn-build/Debug
@@ -362,6 +377,13 @@ for(int n=0; n<numeroVertices;n++){
   }
   this->m_Devices.push_back( phantom0 );
 
+  hHD = hdInitDevice("Phantom");
+
+  hdEnable(3000);
+  hdStartScheduler();
+  //hdMakeCurrentDevice(hHD);
+
+
 }
 
 // -------------------------------------------------------------------------
@@ -374,135 +396,7 @@ createCamera( )
   this->m_Camera->setNearClipDistance( 5 );
 }
 
-void RagDollApp::setMesh(){
-    std::cout << "entrando" << std::endl;
-    Ogre::Entity* planeBlender = this->m_SceneMgr->getEntity("tissue");
 
-//////////////////////////Obteniendo informacion de la malla de la piel//////////////////////////////////////////
-      const Ogre::MeshPtr mesh = planeBlender->getMesh();           
-      const Ogre::Vector3 position = planeBlender->getParentNode()->_getDerivedPosition();
-      const Ogre::Quaternion orient = planeBlender->getParentNode()->_getDerivedOrientation();
-      const Ogre::Vector3 scale = planeBlender->getParentNode()->_getDerivedScale();
-      bool  added_shared = false;
-
-      size_t current_offset = 0;
-      size_t shared_offset = 0;
-      size_t next_offset = 0;
-      size_t index_offset = 0;
-
-      vertex_count = index_count = 0;
-
-      // Calculate how many vertices and indices we're going to need
-    for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
-    {
-        Ogre::SubMesh* submesh = mesh->getSubMesh(i);
-        // We only need to add the shared vertices once
-        if(submesh->useSharedVertices)
-        {
-            if( !added_shared )
-            {
-                vertex_count += mesh->sharedVertexData->vertexCount;
-                added_shared = true;
-            }
-        }
-        else
-        {
-            vertex_count += submesh->vertexData->vertexCount;
-        }
-        // Add the indices
-        index_count += submesh->indexData->indexCount;
-    }
-
-    // Allocate space for the vertices and indices
-    vertices = new Ogre::Vector3[vertex_count];
-    indices = new  Ogre::uint32[index_count];
-
-    added_shared = false;
-
-    // Run through the submeshes again, adding the data into the arrays
-    for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
-    {
-        Ogre::SubMesh* submesh = mesh->getSubMesh(i);
-
-        Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
-
-        if ((!submesh->useSharedVertices) || (submesh->useSharedVertices && !added_shared))
-        {
-            if(submesh->useSharedVertices)
-            {
-                added_shared = true;
-                shared_offset = current_offset;
-            }
-
-            const Ogre::VertexElement* posElem =
-                vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
-
-            Ogre::HardwareVertexBufferSharedPtr vbuf =
-                vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
-
-            unsigned char* vertex =
-                static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-
-            // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
-            //  as second argument. So make it float, to avoid trouble when Ogre::Real will
-            //  be comiled/typedefed as double:
-            //Ogre::Real* pReal;
-            float* pReal;
-
-            for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
-            {
-                posElem->baseVertexPointerToElement(vertex, &pReal);
-                Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
-                vertices[current_offset + j] = (orient * (pt * scale)) + position;
-            }
-            
-            vbuf->unlock();
-            next_offset += vertex_data->vertexCount;
-        }
-
-        Ogre::IndexData* index_data = submesh->indexData;
-        size_t numTris = index_data->indexCount / 3;
-        Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
-        
-        bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
-
-        unsigned long* pLong = static_cast<unsigned long*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-        unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
-
-        size_t offset = (submesh->useSharedVertices)? shared_offset : current_offset;
-
-        if ( use32bitindexes )
-        {
-            for ( size_t k = 0; k < numTris*3; ++k)
-            {
-                indices[index_offset++] = pLong[k] + static_cast<unsigned long>(offset);
-            }
-        }
-        else
-        {
-            for ( size_t k = 0; k < numTris*3; ++k)
-            {
-                indices[index_offset++] = static_cast<unsigned long>(pShort[k]) +
-                                          static_cast<unsigned long>(offset);
-            }
-        }
-
-        ibuf->unlock();
-        current_offset = next_offset;
-    }
- 
-    bool new_closest_found = false;
-    for (size_t i = 0; i < index_count; i += 3)
-    {
-      // check for a hit against this triangle
-     // std::cout<<"triangle "<<i<<": "<<vertices[indices[i]]<<" "<<
-     // vertices[indices[i+1]]<<" "<< vertices[indices[i+2]]<<std::endl;
-    }
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-}
 
 
 bool RagDollApp::
@@ -606,199 +500,12 @@ keyPressed( const OIS::KeyEvent& arg )
     this->updatePositionBullet(vpos,planeBlender_node); //pendiente verificar esto, la punta no colisiona
 
 
-  /*
-/////////////////////////////////////Buscando si hay colision/////////////////////////////////////////////////////////////////
-  //Ogre::Vector3 posTool = Ogre::Vector3(posBall[0],posBall[1],posBall[2]);
-  Ogre::Plane plano;
-  Ogre::Vector3 posTool = planeBlender_node->getPosition();
-  posTool.y=posTool.y-6.5; //la punta de instrumento esta siete unidades abajo del centro
-  //std::cout <<"posx "<< posTool.x << " posy " << posTool.y << " posz " << posTool.z <<"\n";
-  Ogre::Vector3 normal=Ogre::Vector3(posTool.x,-0.5,posTool.z);
-  //std::cout <<"dirx "<< normal.x << " diry " << normal.y << " dirz " << normal.z <<"\n";
-  Ogre::Ray toolRay = Ogre::Ray(posTool, normal);
-  //std::cout<< "origen rayo " << toolRay.getOrigin() << " direccion " << toolRay.getDirection() << "\n";
-  
-  //Plano blender
-  for (size_t i = 0; i < index_count; i += 3){
-    plano = Ogre::Plane(vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]);
-    std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay,vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]],true , true);
-    
-    if(inter.first && inter.second < 1){
-    //  std::cout <<"colision triangulo objetivo: "<< i <<"\n"; 
-    }
-  }
-
-  //Plano manual
-  int aux=0;
-  for(size_t i = 0; i< ibufCount ; i += 3){
-      //std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n"; 
-      int side_a = faces[i];
-      int side_b = faces[i+1];
-      int side_c = faces[i+2];
-      
-      Ogre::Vector3  pointA =  Ogre::Vector3(verts[side_a*6],verts[(side_a*6)+1],verts[(side_a*6)+2]);
-      Ogre::Vector3  pointB =  Ogre::Vector3(verts[side_b*6],verts[(side_b*6)+1],verts[(side_b*6)+2]);
-      Ogre::Vector3  pointC =  Ogre::Vector3(verts[side_c*6],verts[(side_c*6)+1],verts[(side_c*6)+2]);
-      
-      //std::cout <<"tirangulo "<< aux <<" : "<< faces[i] << " " << faces[i+1] << " " << faces[i+2]<<"\n";
-      std::pair<bool,Ogre::Real> inter = Ogre::Math::intersects(toolRay, pointA , pointB , pointC ,true , true);
-      //std::cout <<"first: "<< inter.first << "second: " << inter.second <<"\n";
-      if(inter.first && inter.second < 1){
-      //std::cout <<"colision triangulo objetivo: "<< aux <<"\n";
-        RagDollApp  * a  = new RagDollApp();
-         a->RagDollApp::updateMesh( aux ); //renderizar de nuevo el mesh sin el triangulo colisionado 
-      }
-
-      aux++;
-
-  }
-////////////////////////////////////Fin Buscando colision/////////////////////////////////////////////////////////////////////
-*/
   return( true );
 }
 
 
 
-void RagDollApp::createColourCube()
-{
-    /// Create the mesh via the MeshManager
-    Ogre::MeshPtr msh = Ogre::MeshManager::getSingleton().createManual("ColourCube", "General");
 
-    /// Create one submesh
-    Ogre::SubMesh* sub = msh->createSubMesh();
-
-
-    
-    Ogre::RenderSystem* rs = this->m_Root->getSingleton().getRenderSystem();
-    //Root::getSingleton().getRenderSystem();
-    Ogre::RGBA colours[nVertices];
-    Ogre::RGBA *pColour = colours;
-    // Use render system to convert colour value since colour packing varies
-    rs->convertColourValue(Ogre::ColourValue(1.0,0.0,0.0), pColour++); //0 colour
-    rs->convertColourValue(Ogre::ColourValue(1.0,1.0,0.0), pColour++); //1 colour
-    rs->convertColourValue(Ogre::ColourValue(0.0,1.0,0.0), pColour++); //2 colour
-    rs->convertColourValue(Ogre::ColourValue(0.0,0.0,0.0), pColour++); //3 colour
-    rs->convertColourValue(Ogre::ColourValue(1.0,0.0,1.0), pColour++); //4 colour
-    rs->convertColourValue(Ogre::ColourValue(1.0,1.0,1.0), pColour++); //5 colour
-    rs->convertColourValue(Ogre::ColourValue(0.0,1.0,1.0), pColour++); //6 colour
-    rs->convertColourValue(Ogre::ColourValue(0.0,0.0,1.0), pColour++); //7 colour
-
-    /// Create vertex data structure for 8 vertices shared between submeshes
-    msh->sharedVertexData = new Ogre::VertexData();
-    msh->sharedVertexData->vertexCount = nVertices;
-
-    /// Create declaration (memory format) of vertex data
-    Ogre::VertexDeclaration* decl = msh->sharedVertexData->vertexDeclaration;
-    size_t offset = 0;
-    // 1st buffer
-    decl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-    offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-    decl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_NORMAL);
-    offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-    /// Allocate vertex buffer of the requested number of vertices (vertexCount) 
-    /// and bytes per vertex (offset)
-    Ogre::HardwareVertexBufferSharedPtr vbuf = 
-        Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
-        offset, msh->sharedVertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-    /// Upload the vertex data to the card
-    vbuf->writeData(0, vbuf->getSizeInBytes(), verts, true);
-
-    /// Set vertex buffer binding so buffer 0 is bound to our vertex buffer
-    Ogre::VertexBufferBinding* bind = msh->sharedVertexData->vertexBufferBinding; 
-    bind->setBinding(0, vbuf);
-
-    // 2nd buffer
-    offset = 0;
-    decl->addElement(1, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
-    offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
-    /// Allocate vertex buffer of the requested number of vertices (vertexCount) 
-    /// and bytes per vertex (offset)
-    vbuf = Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
-        offset, msh->sharedVertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-    /// Upload the vertex data to the card
-    vbuf->writeData(0, vbuf->getSizeInBytes(), colours, true);
-
-    /// Set vertex buffer binding so buffer 1 is bound to our colour buffer
-    bind->setBinding(1, vbuf);
-
-    /// Allocate index buffer of the requested number of vertices (ibufCount) 
-    Ogre::HardwareIndexBufferSharedPtr ibuf = Ogre::HardwareBufferManager::getSingleton().
-        createIndexBuffer(
-        Ogre::HardwareIndexBuffer::IT_16BIT, 
-        ibufCount, 
-        Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-
-    /// Upload the index data to the card
-    ibuf->writeData(0, ibuf->getSizeInBytes(), faces, true);
-
-    /// Set parameters of the submesh
-    sub->useSharedVertices = true;
-    sub->indexData->indexBuffer = ibuf;
-    sub->indexData->indexCount = ibufCount;
-    sub->indexData->indexStart = 0;
-
-    /// Set bounding information (for culling)
-    msh->_setBounds(Ogre::AxisAlignedBox(-100,-100,-100,100,100,100));
-    msh->_setBoundingSphereRadius(Ogre::Math::Sqrt(3*100*100));
-
-    /// Notify -Mesh object that it has been loaded
-    msh->load();
-}
-
- void RagDollApp::updateMesh(int trian ){
-   std::cout <<"Aquiiiiiiiiiiiiiiiiiiiiiiiiiiiii Antes "<< "\n";
-   //Borrando triangulo
-   //Ogre::Entity* planeManual = this->m_SceneMgr->getEntity("cc");
-   std::cout <<"Aquiiiiiiiiiiiiiiiiiiiiiiiiiiiii "<< "\n";
-    // Associate it to a node
-   //updatePhysics(planeManual, cc_node, 0.0009, 0.0009, 75, Ogre::Vector3( 0, -bbox4.getMinimum( )[ 1 ] * 2, 0 ) ,q4)
-   updatePhysics();
-   std::cout <<"Borrar Triangulo: "<< trian <<"\n";
-   std::cout <<"borrar vertices: "<< faces[3 * trian]  << " " << faces[(3 * trian)+1] << " " << faces[(3 * trian)+2] <<"\n";
-   //
-   
-   
-   indi[trian] = 0;
-   unsigned short *facesTemp;
-    size_t temp = 0;
-
-    for(size_t i = 0; i< (ibufCount/3); i++){
-      
-      if(indi[i] == 1){
-        int k=i*3;
-        //facesTemp[temp]   =   faces[k];
-        //facesTemp[temp+1] =   faces[(k)+1];
-        //facesTemp[temp+2] =   faces[(k)+2];
-        //temp              = temp + 3; 
-      }else {
-       // std::cout <<"Eliminando triangulo: "<< i <<"\n";
-      }
-      //esta imprimiento mal el indicador
-      std::cout <<"Indi "<< i <<": "<< indi[i]<<"\n";
-    }
-
-   
-   /* 
-   for (size_t i = 0; i< ibufCount ; i += 3){
-     
-     if(i == (3* trian)){
-        std::cout <<"Eliminando triangulo: "<< i/3 <<"\n";
-     }else {
-       //std::cout <<"Copiando triangulos "<< i/3 << " al " << temp/3 <<"\n";
-        facesTemp[temp]   =   faces[i];
-        facesTemp[temp+1] =   faces[(i)+1];
-        facesTemp[temp+2] =   faces[(i)+2];
-        //facesTemp[temp]   =   0;
-        //facesTemp[temp+1] =   0;
-        //facesTemp[temp+2] =   0;
-        //temp = temp + 3 ;   
-    } 
-
-   }
-   */
-   //facesTemp[0] = 0;
-  // std::cout <<"Copiado de triangulos finalizado " <<"\n";
- }
 
 
 bool RagDollApp::
@@ -867,6 +574,7 @@ updateCatheterPosition( ) {
 
   const unsigned int movementScale = 70;
   const unsigned int movementTranslate = 10;
+  
 	double movx = (movementScale * this->dx)+movementTranslate;
 	double movy = (movementScale * this->dy)+movementTranslate;
 	double movz = (movementScale * this->dz)+movementTranslate;
@@ -895,12 +603,31 @@ isCollisionDetectedBetweenExistingNodes( ){
 void RagDollApp::
 applyCollisionForceFeedback( ){
   //retroalimentacion
+  
+  HDErrorInfo error;
   std::cout <<"Devolviendo fuerza: " <<"\n";
-  hduVector3Dd feedbackForce(0.2,0.5,0);
-  std::cout <<"HD_CURRENT_FORCE: " <<HD_CURRENT_FORCE<<"\n";
+  //hduVector3Dd feedbackForce(0.0,0.95,0.68);
+  //std::cout <<"HD_CURRENT_FORCE: " <<HD_CURRENT_FORCE<<"\n";
   //hdSetDoublev ( HD_CURRENT_FORCE, feedbackForce );
-  HDdouble baseTorque[3] = {100, 250, 200}; //Base Torque in mNm
-  //hdSetDoublev(HD_CURRENT_GIMBAL_TORQUE, baseTorque  );
+  //HDdouble baseTorque[3] = {100, 250, 200}; //Base Torque in mNm
+  //hdSetDoublev(HD_CURRENT_JOINT_TORQUE, baseTorque );
+  hdMakeCurrentDevice(hHD);
+  std::cout <<"Device numero: "<< hdGetCurrentDevice() <<"\n";
+   
+   
+  // hdBeginFrame(0);
+
+  
+
+    HDdouble force[3] = {100, 107, 100};
+    hdGetDoublev(3000,force);
+  //hdEndFrame(0);
+
+  //hdStopScheduler();
+  //hdUnschedule(scheduleCallbackHandle);
+  //hdDisableDevice(hdGetCurrentDevice());
+    
+ 
 
 }
 
